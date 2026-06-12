@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Fitness">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<title>Fitness Dashboard</title>
+<style>
+:root {
+  --bg: #0a0a0a;
+  --bg2: #141414;
+  --bg3: #1c1c1c;
+  --bg4: #242424;
+  --border: rgba(255,255,255,0.08);
+  --text: #f0f0f0;
+  --text2: #888;
+  --text3: #555;
+  --green: #1D9E75;
+  --green-bg: rgba(29,158,117,0.12);
+  --blue: #378ADD;
+  --blue-bg: rgba(55,138,221,0.12);
+  --amber: #EF9F27;
+  --amber-bg: rgba(239,159,39,0.12);
+  --coral: #D85A30;
+  --coral-bg: rgba(216,90,48,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; overflow: hidden; }
+
+/* App shell */
+.app { display: flex; flex-direction: column; height: 100%; height: 100dvh; }
+.topbar {
+  padding: calc(var(--safe-top) + 12px) 20px 12px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: var(--bg);
+  border-bottom: 0.5px solid var(--border);
+  flex-shrink: 0;
+}
+.topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+.topbar-date { font-size: 13px; color: var(--text2); }
+.content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 0 calc(var(--safe-bottom) + 80px); }
+.navbar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding-bottom: var(--safe-bottom);
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 0.5px solid var(--border);
+  display: flex;
+}
+.nav-btn {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 10px 0 8px; background: none; border: none; color: var(--text3);
+  font-size: 10px; font-weight: 500; cursor: pointer; transition: color 0.15s;
+}
+.nav-btn.active { color: var(--green); }
+.nav-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Pages */
+.page { display: none; padding: 16px; }
+.page.active { display: block; }
+
+/* Cards */
+.card { background: var(--bg2); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 0.5px solid var(--border); }
+.card-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; }
+
+/* Metrics row */
+.metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.metric { background: var(--bg2); border-radius: var(--radius-sm); padding: 14px; border: 0.5px solid var(--border); }
+.metric-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
+.metric-value { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
+.metric-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.metric.green .metric-value { color: var(--green); }
+.metric.blue .metric-value { color: var(--blue); }
+.metric.amber .metric-value { color: var(--amber); }
+.metric.coral .metric-value { color: var(--coral); }
+
+/* Progress bars */
+.prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.prog-label { font-size: 13px; color: var(--text2); width: 90px; flex-shrink: 0; }
+.prog-bar { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 3px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
+.prog-val { font-size: 12px; font-weight: 600; width: 36px; text-align: right; color: var(--text); }
+
+/* Sliders */
+.slider-row { margin-bottom: 14px; }
+.slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.slider-name { font-size: 14px; color: var(--text); }
+.slider-val { font-size: 14px; font-weight: 600; }
+input[type=range] {
+  width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
+  background: var(--bg4); border-radius: 2px; outline: none;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--text); border: none; cursor: pointer;
+}
+
+/* Week tracker */
+.week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.week-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.week-cell-label { font-size: 10px; color: var(--text3); text-transform: uppercase; }
+.week-dot {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1.5px solid var(--border); background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: all 0.2s; font-size: 15px;
+}
+.week-dot.done { background: var(--green); border-color: var(--green); }
+.week-dot.done svg { stroke: #fff; }
+.week-dot:not(.done) svg { stroke: var(--text3); }
+.week-dot svg { width: 18px; height: 18px; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+/* Calendar */
+.cal-header-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 4px; }
+.cal-header-row span { font-size: 11px; color: var(--text3); text-align: center; }
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-day {
+  aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s;
+  position: relative;
+}
+.cal-day.today { border: 1.5px solid var(--text2); color: var(--text); font-weight: 600; }
+.cal-day.train-a { background: var(--blue-bg); color: var(--blue); font-weight: 600; }
+.cal-day.train-b { background: var(--green-bg); color: var(--green); font-weight: 600; }
+.cal-day.bball { background: var(--amber-bg); color: var(--amber); font-weight: 600; }
+.cal-day.done-mark::after {
+  content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%; background: currentColor;
+}
+
+/* Workout page */
+.exercise-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 0; border-bottom: 0.5px solid var(--border);
+}
+.exercise-row:last-child { border-bottom: none; }
+.exercise-name { font-size: 15px; color: var(--text); }
+.exercise-sets { font-size: 13px; color: var(--text2); font-weight: 500; }
+.check-btn {
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 1.5px solid var(--border); background: none; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  flex-shrink: 0;
+}
+.check-btn.done { background: var(--green); border-color: var(--green); }
+.check-btn svg { width: 14px; height: 14px; stroke: var(--text3); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.check-btn.done svg { stroke: #fff; }
+
+/* Tab selector */
+.tab-row { display: flex; background: var(--bg3); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 14px; gap: 2px; }
+.tab-btn { flex: 1; padding: 8px; border: none; background: none; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { background: var(--bg2); color: var(--text); }
+
+/* Streak badge */
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--amber-bg); color: var(--amber);
+  border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 600;
+}
+
+/* Install hint */
+.install-hint {
+  background: var(--green-bg); border: 0.5px solid rgba(29,158,117,0.3);
+  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px;
+  font-size: 13px; color: var(--green); line-height: 1.5; display: flex; gap:10px; align-items: flex-start;
+}
+.install-hint svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; stroke: var(--green); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.close-hint { background: none; border: none; color: var(--green); font-size: 18px; cursor: pointer; margin-left: auto; padding: 0 0 0 8px; }
+
+section-divider { display: block; height: 1px; background: var(--border); margin: 4px 0 12px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div>
+      <div class="topbar-title">Fitness 💪</div>
+      <div class="topbar-date" id="topbar-date"></div>
+    </div>
+    <div class="streak-badge">
+      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span id="streak-badge-val">1 нед.</span>
+    </div>
+  </div>
+
+  <div class="content" id="main-content">
+
+    <!-- HOME PAGE -->
+    <div class="page active" id="page-home">
+      <div id="install-hint" class="install-hint" style="display:none">
+        <svg viewBox="0 0 24 24"><path d="M12 2v13M8 11l4 4 4-4"/><path d="M20 17v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg>
+        <span>Добавь на экран: нажми <b>Поделиться →</b> затем <b>На экран Домой</b></span>
+        <button class="close-hint" onclick="dismissHint()">×</button>
+      </div>
+
+      <div class="metrics-row">
+        <div class="metric green">
+          <div class="metric-label">Калории</div>
+          <div class="metric-value" id="m-kcal">0</div>
+          <div class="metric-sub">цель 2650</div>
+        </div>
+        <div class="metric blue">
+          <div class="metric-label">Белок</div>
+          <div class="metric-value" id="m-protein">0г</div>
+          <div class="metric-sub">цель 190г</div>
+        </div>
+        <div class="metric amber">
+          <div class="metric-label">Тренировок</div>
+          <div class="metric-value" id="m-trains">0/3</div>
+          <div class="metric-sub">эта неделя</div>
+        </div>
+        <div class="metric coral">
+          <div class="metric-label">Прогресс</div>
+          <div class="metric-value" id="m-progress">0%</div>
+          <div class="metric-sub">дня</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Питание сегодня</div>
+        <div class="prog-row">
+          <div class="prog-label">Калории</div>
+          <div class="prog-bar"><div class="prog-fill" id="pb-kcal" style="width:0%;background:var(--green)"></div></div>
+          <div class="prog-val" id="pv-kcal">0%</div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label">Белок</div>
+          <div class="prog-bar"><div class="prog-fill" id="pb-protein" style="width:0%;background:var(--blue)"></div></div>
+          <div class="prog-val" id="pv-protein">0%</div>
+        </div>
+        <div class="prog-row">
+          <div class="prog-label">Углеводы</div>
+          <div class="prog-bar"><div class="prog-fill" id="pb-carbs" style="width:0%;background:var(--amber)"></div></div>
+          <div class="prog-val" id="pv-carbs">0%</div>
+        </div>
+        <div class="prog-row" style="margin-bottom:0">
+          <div class="prog-label">Жиры</div>
+          <div class="prog-bar"><div class="prog-fill" id="pb-fat" style="width:0%;background:var(--coral)"></div></div>
+          <div class="prog-val" id="pv-fat">0%</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Неделя</div>
+        <div class="week-grid" id="week-grid-home"></div>
+      </div>
+    </div>
+
+    <!-- NUTRITION PAGE -->
+    <div class="page" id="page-nutrition">
+      <div class="card">
+        <div class="card-title">Введи данные за сегодня</div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">🔥 Калории</span>
+            <span class="slider-val" id="sl-lbl-kcal" style="color:var(--green)">0 ккал</span>
+          </div>
+          <input type="range" min="0" max="3500" step="50" value="0" id="sl-kcal" oninput="updateSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">💪 Белок</span>
+            <span class="slider-val" id="sl-lbl-protein" style="color:var(--blue)">0г</span>
+          </div>
+          <input type="range" min="0" max="250" step="5" value="0" id="sl-protein" oninput="updateSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">⚡ Углеводы</span>
+            <span class="slider-val" id="sl-lbl-carbs" style="color:var(--amber)">0г</span>
+          </div>
+          <input type="range" min="0" max="400" step="5" value="0" id="sl-carbs" oninput="updateSlider()">
+        </div>
+        <div class="slider-row">
+          <div class="slider-header">
+            <span class="slider-name">🥑 Жиры</span>
+            <span class="slider-val" id="sl-lbl-fat" style="color:var(--coral)">0г</span>
+          </div>
+          <input type="range" min="0" max="150" step="5" value="0" id="sl-fat" oninput="updateSlider()">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Цели на день</div>
+        <div class="prog-row"><div class="prog-label">Калории</div><div class="prog-bar"><div class="prog-fill" id="pb2-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv2-kcal">0%</div></div>
+        <div class="prog-row"><div class="prog-label">Белок</div><div class="prog-bar"><div class="prog-fill" id="pb2-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv2-protein">0%</div></div>
+        <div class="prog-row"><div class="prog-label">Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb2-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv2-carbs">0%</div></div>
+        <div class="prog-row" style="margin-bottom:0"><div class="prog-label">Жиры</div><div class="prog-bar"><div class="prog-fill" id="pb2-fat" style="width:0%;background:var(--coral)"></div></div><div class="prog-val" id="pv2-fat">0%</div></div>
+      </div>
+
+      <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+        <div style="font-size:13px;color:var(--green);line-height:1.6">
+          <b>Твои нормы:</b><br>
+          🔥 2650 ккал · 💪 190г белок<br>
+          ⚡ 265г углеводы · 🥑 75г жиры
+        </div>
+      </div>
+    </div>
+
+    <!-- WORKOUT PAGE -->
+    <div class="page" id="page-workout">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="showWorkoutTab('A',this)">День A</button>
+        <button class="tab-btn" onclick="showWorkoutTab('B',this)">День B</button>
+        <button class="tab-btn" onclick="showWorkoutTab('week',this)">Неделя</button>
+      </div>
+
+      <div id="workout-A">
+        <div class="card">
+          <div class="card-title">День A — ноги + взрывность</div>
+          <div id="exercises-A"></div>
+        </div>
+        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)">
+          <div style="font-size:13px;color:var(--blue);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div>
+        </div>
+      </div>
+
+      <div id="workout-B" style="display:none">
+        <div class="card">
+          <div class="card-title">День B — верх + кор</div>
+          <div id="exercises-B"></div>
+        </div>
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+          <div style="font-size:13px;color:var(--green);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div>
+        </div>
+      </div>
+
+      <div id="workout-week" style="display:none">
+        <div class="card">
+          <div class="card-title">Недельный план</div>
+          <div class="week-grid" id="week-grid-workout"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Календарь июнь 2026</div>
+          <div class="cal-header-row">
+            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS PAGE -->
+    <div class="page" id="page-stats">
+      <div class="card">
+        <div class="card-title">Твои параметры</div>
+        <div class="exercise-row"><div class="exercise-name">Возраст</div><div class="exercise-sets">33 года</div></div>
+        <div class="exercise-row"><div class="exercise-name">Рост</div><div class="exercise-sets">197 см</div></div>
+        <div class="exercise-row"><div class="exercise-name">Вес</div><div class="exercise-sets">94 кг</div></div>
+        <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Базовый обмен</div><div class="exercise-sets">~2200 ккал</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Цели</div>
+        <div class="exercise-row"><div class="exercise-name">Тип тела</div><div class="exercise-sets" style="color:var(--green)">Рекомпозиция</div></div>
+        <div class="exercise-row"><div class="exercise-name">Фокус</div><div class="exercise-sets">Атлетика + внешний вид</div></div>
+        <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Тренировок/нед</div><div class="exercise-sets">2–3 + баскетбол</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Недельный прогресс</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center">
+            <div style="font-size:28px;font-weight:700;color:var(--green)" id="stat-trains">0</div>
+            <div style="font-size:12px;color:var(--text2)">тренировок</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center">
+            <div style="font-size:28px;font-weight:700;color:var(--amber)" id="stat-streak">1</div>
+            <div style="font-size:12px;color:var(--text2)">недель подряд</div>
+          </div>
+        </div>
+      </div>
+      <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить данные</button>
+    </div>
+
+  </div>
+
+  <nav class="navbar">
+    <button class="nav-btn active" onclick="showPage('home',this)" id="nav-home">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      Главная
+    </button>
+    <button class="nav-btn" onclick="showPage('nutrition',this)" id="nav-nutrition">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Питание
+    </button>
+    <button class="nav-btn" onclick="showPage('workout',this)" id="nav-workout">
+      <svg viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 0012 0V4M4 9h2m12 0h2"/></svg>
+      Тренировки
+    </button>
+    <button class="nav-btn" onclick="showPage('stats',this)" id="nav-stats">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Прогресс
+    </button>
+  </nav>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────
+const todayKey = () => new Date().toISOString().slice(0,10);
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem('fitness_state') || '{}'); } catch { return {}; }
+}
+function saveState(s) { localStorage.setItem('fitness_state', JSON.stringify(s)); }
+
+let state = loadState();
+if (!state.nutrition) state.nutrition = {};
+if (!state.weekDone) state.weekDone = {};
+if (!state.exerciseDone) state.exerciseDone = {};
+if (!state.streak) state.streak = 1;
+
+// ── Init ───────────────────────────────────────────
+const todayDate = todayKey();
+const weekStart = getWeekStart();
+
+// Clean old week data
+if (state.weekStart !== weekStart) {
+  state.weekStart = weekStart;
+  state.weekDone = {};
+  state.exerciseDone = {};
+  saveState(state);
+}
+
+const exercisesA = [
+  {name:'Приседания со штангой', sets:'4×5'},
+  {name:'Румынская тяга', sets:'3×8'},
+  {name:'Болгарские выпады', sets:'3×10'},
+  {name:'Запрыгивания на ящик', sets:'4×5'},
+  {name:'Подъём на икры', sets:'3×15'},
+];
+const exercisesB = [
+  {name:'Жим лёжа', sets:'4×5'},
+  {name:'Тяга штанги в наклоне', sets:'4×6'},
+  {name:'Жим гантелей стоя', sets:'3×8'},
+  {name:'Подтягивания', sets:'4×max'},
+  {name:'Планка + скручивания', sets:'3×30с'},
+];
+
+const weekDayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+
+function getWeekStart() {
+  const d = new Date();
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1);
+  return d.toISOString().slice(0,10);
+}
+
+// ── Date header ────────────────────────────────────
+function formatDate() {
+  const d = new Date();
+  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  const days = ['вс','пн','вт','ср','чт','пт','сб'];
+  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+}
+document.getElementById('topbar-date').textContent = formatDate();
+
+// ── Install hint ───────────────────────────────────
+const isStandalone = window.navigator.standalone;
+const hintDismissed = localStorage.getItem('hint_dismissed');
+if (!isStandalone && !hintDismissed) {
+  document.getElementById('install-hint').style.display = 'flex';
+}
+function dismissHint() {
+  document.getElementById('install-hint').style.display = 'none';
+  localStorage.setItem('hint_dismissed', '1');
+}
+
+// ── Navigation ─────────────────────────────────────
+function showPage(name, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Workout tabs ───────────────────────────────────
+function showWorkoutTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['A','B','week'].forEach(t => {
+    document.getElementById('workout-' + t).style.display = t === tab ? 'block' : 'none';
+  });
+}
+
+// ── Exercises ──────────────────────────────────────
+function buildExercises(list, id, prefix) {
+  const container = document.getElementById(id);
+  container.innerHTML = '';
+  list.forEach((ex, i) => {
+    const key = prefix + '_' + i;
+    const done = !!(state.exerciseDone[key]);
+    const row = document.createElement('div');
+    row.className = 'exercise-row';
+    row.innerHTML = `
+      <div style="flex:1">
+        <div class="exercise-name" style="${done ? 'color:var(--text3);text-decoration:line-through' : ''}">${ex.name}</div>
+      </div>
+      <div class="exercise-sets" style="margin-right:12px">${ex.sets}</div>
+      <button class="check-btn ${done ? 'done' : ''}" onclick="toggleExercise('${key}','${id}','${prefix}')">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>`;
+    container.appendChild(row);
+  });
+}
+
+function toggleExercise(key, id, prefix) {
+  state.exerciseDone[key] = !state.exerciseDone[key];
+  saveState(state);
+  const list = prefix === 'A' ? exercisesA : exercisesB;
+  buildExercises(list, id, prefix);
+}
+
+// ── Week grid ──────────────────────────────────────
+function buildWeekGrid(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  const done = Object.values(state.weekDone).filter(Boolean).length;
+  weekDayNames.forEach((d, i) => {
+    const key = 'day_' + i;
+    const isDone = !!state.weekDone[key];
+    const cell = document.createElement('div');
+    cell.className = 'week-cell';
+    cell.innerHTML = `
+      <div class="week-day-label">${d}</div>
+      <div class="week-dot ${isDone ? 'done' : ''}" onclick="toggleWeekDay('${key}','${containerId}')">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>`;
+    container.appendChild(cell);
+  });
+  updateMetrics();
+}
+
+function toggleWeekDay(key, containerId) {
+  state.weekDone[key] = !state.weekDone[key];
+  saveState(state);
+  buildWeekGrid('week-grid-home');
+  buildWeekGrid('week-grid-workout');
+}
+
+// ── Nutrition sliders ──────────────────────────────
+function updateSlider() {
+  const kcal = parseInt(document.getElementById('sl-kcal').value);
+  const protein = parseInt(document.getElementById('sl-protein').value);
+  const carbs = parseInt(document.getElementById('sl-carbs').value);
+  const fat = parseInt(document.getElementById('sl-fat').value);
+
+  document.getElementById('sl-lbl-kcal').textContent = kcal + ' ккал';
+  document.getElementById('sl-lbl-protein').textContent = protein + 'г';
+  document.getElementById('sl-lbl-carbs').textContent = carbs + 'г';
+  document.getElementById('sl-lbl-fat').textContent = fat + 'г';
+
+  state.nutrition[todayDate] = { kcal, protein, carbs, fat };
+  saveState(state);
+  updateMetrics();
+  updateProgressBars();
+}
+
+function updateProgressBars() {
+  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
+  const goals = { kcal:2650, protein:190, carbs:265, fat:75 };
+  ['kcal','protein','carbs','fat'].forEach(k => {
+    const pct = Math.min(100, Math.round(n[k] / goals[k] * 100));
+    ['pb-','pb2-'].forEach(pfx => {
+      const el = document.getElementById(pfx+k);
+      if (el) el.style.width = pct + '%';
+    });
+    ['pv-','pv2-'].forEach(pfx => {
+      const el = document.getElementById(pfx+k);
+      if (el) el.textContent = pct + '%';
+    });
+  });
+}
+
+function updateMetrics() {
+  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
+  const trainCount = Object.values(state.weekDone).filter(Boolean).length;
+  const kcalPct = Math.min(100, Math.round(n.kcal/2650*100));
+  const proteinPct = Math.min(100, Math.round(n.protein/190*100));
+  const dayProgress = Math.round((kcalPct + proteinPct) / 2);
+
+  document.getElementById('m-kcal').textContent = n.kcal;
+  document.getElementById('m-protein').textContent = n.protein + 'г';
+  document.getElementById('m-trains').textContent = trainCount + '/3';
+  document.getElementById('m-progress').textContent = dayProgress + '%';
+  document.getElementById('stat-trains').textContent = trainCount;
+  document.getElementById('stat-streak').textContent = state.streak || 1;
+  document.getElementById('streak-badge-val').textContent = (state.streak || 1) + ' нед.';
+}
+
+// ── Calendar ───────────────────────────────────────
+function buildCalendar() {
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
+  const schedule = {1:'train-a',2:'bball',3:'train-b',5:'train-a',8:'train-b',9:'bball',10:'train-a',12:'train-b',15:'bball',16:'train-a',17:'train-b',19:'bball',22:'train-a',23:'train-b',24:'bball',26:'train-a',29:'train-b',30:'bball'};
+  const today = new Date().getDate();
+  for (let e = 0; e < 0; e++) { // June 2026 starts on Monday
+    const el = document.createElement('div');
+    el.style.opacity = '0';
+    grid.appendChild(el);
+  }
+  for (let d = 1; d <= 30; d++) {
+    const el = document.createElement('div');
+    let cls = 'cal-day';
+    if (schedule[d]) cls += ' ' + schedule[d];
+    if (d === today) cls += ' today';
+    el.className = cls;
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+// ── Load saved nutrition ───────────────────────────
+function loadSavedNutrition() {
+  const n = state.nutrition[todayDate];
+  if (n) {
+    ['kcal','protein','carbs','fat'].forEach(k => {
+      const el = document.getElementById('sl-' + k);
+      if (el) el.value = n[k] || 0;
+    });
+  }
+}
+
+// ── Reset ──────────────────────────────────────────
+function resetData() {
+  if (confirm('Сбросить все данные?')) {
+    localStorage.clear();
+    location.reload();
+  }
+}
+
+// ── Boot ───────────────────────────────────────────
+buildExercises(exercisesA, 'exercises-A', 'A');
+buildExercises(exercisesB, 'exercises-B', 'B');
+buildWeekGrid('week-grid-home');
+buildWeekGrid('week-grid-workout');
+buildCalendar();
+loadSavedNutrition();
+updateMetrics();
+updateProgressBars();
+
+// Service worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
