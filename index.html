@@ -12,68 +12,30 @@
 <title>Fitness Dashboard</title>
 <style>
 :root {
-  --bg: #0a0a0a;
-  --bg2: #141414;
-  --bg3: #1c1c1c;
-  --bg4: #242424;
-  --border: rgba(255,255,255,0.08);
-  --text: #f0f0f0;
-  --text2: #888;
-  --text3: #555;
-  --green: #1D9E75;
-  --green-bg: rgba(29,158,117,0.12);
-  --blue: #378ADD;
-  --blue-bg: rgba(55,138,221,0.12);
-  --amber: #EF9F27;
-  --amber-bg: rgba(239,159,39,0.12);
-  --coral: #D85A30;
-  --coral-bg: rgba(216,90,48,0.12);
-  --radius: 16px;
-  --radius-sm: 10px;
-  --safe-top: env(safe-area-inset-top);
-  --safe-bottom: env(safe-area-inset-bottom);
+  --bg: #0a0a0a; --bg2: #141414; --bg3: #1c1c1c; --bg4: #242424;
+  --border: rgba(255,255,255,0.08); --text: #f0f0f0; --text2: #888; --text3: #555;
+  --green: #1D9E75; --green-bg: rgba(29,158,117,0.12);
+  --blue: #378ADD; --blue-bg: rgba(55,138,221,0.12);
+  --amber: #EF9F27; --amber-bg: rgba(239,159,39,0.12);
+  --coral: #D85A30; --coral-bg: rgba(216,90,48,0.12);
+  --radius: 16px; --radius-sm: 10px;
+  --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; overflow: hidden; }
-
-/* App shell */
-.app { display: flex; flex-direction: column; height: 100%; height: 100dvh; }
-.topbar {
-  padding: calc(var(--safe-top) + 12px) 20px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  background: var(--bg);
-  border-bottom: 0.5px solid var(--border);
-  flex-shrink: 0;
-}
+.app { display: flex; flex-direction: column; height: 100dvh; }
+.topbar { padding: calc(var(--safe-top) + 12px) 20px 12px; display: flex; align-items: center; justify-content: space-between; background: var(--bg); border-bottom: 0.5px solid var(--border); flex-shrink: 0; }
 .topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
 .topbar-date { font-size: 13px; color: var(--text2); }
 .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 0 calc(var(--safe-bottom) + 80px); }
-.navbar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  padding-bottom: var(--safe-bottom);
-  background: rgba(10,10,10,0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 0.5px solid var(--border);
-  display: flex;
-}
-.nav-btn {
-  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px;
-  padding: 10px 0 8px; background: none; border: none; color: var(--text3);
-  font-size: 10px; font-weight: 500; cursor: pointer; transition: color 0.15s;
-}
+.navbar { position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: var(--safe-bottom); background: rgba(10,10,10,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border); display: flex; }
+.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0 8px; background: none; border: none; color: var(--text3); font-size: 10px; font-weight: 500; cursor: pointer; transition: color 0.15s; }
 .nav-btn.active { color: var(--green); }
 .nav-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-
-/* Pages */
 .page { display: none; padding: 16px; }
 .page.active { display: block; }
-
-/* Cards */
 .card { background: var(--bg2); border-radius: var(--radius); padding: 16px; margin-bottom: 12px; border: 0.5px solid var(--border); }
 .card-title { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; }
-
-/* Metrics row */
 .metrics-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .metric { background: var(--bg2); border-radius: var(--radius-sm); padding: 14px; border: 0.5px solid var(--border); }
 .metric-label { font-size: 12px; color: var(--text2); margin-bottom: 4px; }
@@ -83,101 +45,71 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .metric.blue .metric-value { color: var(--blue); }
 .metric.amber .metric-value { color: var(--amber); }
 .metric.coral .metric-value { color: var(--coral); }
-
-/* Progress bars */
 .prog-row { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .prog-label { font-size: 13px; color: var(--text2); width: 90px; flex-shrink: 0; }
 .prog-bar { flex: 1; height: 6px; background: var(--bg4); border-radius: 3px; overflow: hidden; }
 .prog-fill { height: 100%; border-radius: 3px; transition: width 0.4s cubic-bezier(.4,0,.2,1); }
 .prog-val { font-size: 12px; font-weight: 600; width: 36px; text-align: right; color: var(--text); }
-
-/* Sliders */
 .slider-row { margin-bottom: 14px; }
 .slider-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
 .slider-name { font-size: 14px; color: var(--text); }
 .slider-val { font-size: 14px; font-weight: 600; }
-input[type=range] {
-  width: 100%; height: 4px; -webkit-appearance: none; appearance: none;
-  background: var(--bg4); border-radius: 2px; outline: none;
-}
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
-  background: var(--text); border: none; cursor: pointer;
-}
-
-/* Week tracker */
+input[type=range] { width: 100%; height: 4px; -webkit-appearance: none; appearance: none; background: var(--bg4); border-radius: 2px; outline: none; }
+input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%; background: var(--text); border: none; cursor: pointer; }
 .week-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
 .week-cell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .week-cell-label { font-size: 10px; color: var(--text3); text-transform: uppercase; }
-.week-dot {
-  width: 36px; height: 36px; border-radius: 50%;
-  border: 1.5px solid var(--border); background: var(--bg3);
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.2s; font-size: 15px;
-}
+.week-dot { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg3); display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
 .week-dot.done { background: var(--green); border-color: var(--green); }
+.week-dot svg { width: 18px; height: 18px; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke: var(--text3); }
 .week-dot.done svg { stroke: #fff; }
-.week-dot:not(.done) svg { stroke: var(--text3); }
-.week-dot svg { width: 18px; height: 18px; stroke-width: 2.5; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-
-/* Calendar */
 .cal-header-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 4px; }
 .cal-header-row span { font-size: 11px; color: var(--text3); text-align: center; }
 .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-.cal-day {
-  aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center;
-  font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s;
-  position: relative;
-}
+.cal-day { aspect-ratio: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; color: var(--text2); cursor: pointer; transition: all 0.15s; }
 .cal-day.today { border: 1.5px solid var(--text2); color: var(--text); font-weight: 600; }
 .cal-day.train-a { background: var(--blue-bg); color: var(--blue); font-weight: 600; }
 .cal-day.train-b { background: var(--green-bg); color: var(--green); font-weight: 600; }
 .cal-day.bball { background: var(--amber-bg); color: var(--amber); font-weight: 600; }
-.cal-day.done-mark::after {
-  content: ''; position: absolute; bottom: 3px; left: 50%; transform: translateX(-50%);
-  width: 4px; height: 4px; border-radius: 50%; background: currentColor;
-}
-
-/* Workout page */
-.exercise-row {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 0; border-bottom: 0.5px solid var(--border);
-}
+.exercise-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
 .exercise-row:last-child { border-bottom: none; }
 .exercise-name { font-size: 15px; color: var(--text); }
 .exercise-sets { font-size: 13px; color: var(--text2); font-weight: 500; }
-.check-btn {
-  width: 28px; height: 28px; border-radius: 50%;
-  border: 1.5px solid var(--border); background: none; cursor: pointer;
-  display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-  flex-shrink: 0;
-}
+.check-btn { width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; flex-shrink: 0; }
 .check-btn.done { background: var(--green); border-color: var(--green); }
 .check-btn svg { width: 14px; height: 14px; stroke: var(--text3); fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 .check-btn.done svg { stroke: #fff; }
-
-/* Tab selector */
 .tab-row { display: flex; background: var(--bg3); border-radius: var(--radius-sm); padding: 3px; margin-bottom: 14px; gap: 2px; }
 .tab-btn { flex: 1; padding: 8px; border: none; background: none; border-radius: 8px; font-size: 14px; font-weight: 500; color: var(--text2); cursor: pointer; transition: all 0.2s; }
 .tab-btn.active { background: var(--bg2); color: var(--text); }
-
-/* Streak badge */
-.streak-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  background: var(--amber-bg); color: var(--amber);
-  border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 600;
-}
-
-/* Install hint */
-.install-hint {
-  background: var(--green-bg); border: 0.5px solid rgba(29,158,117,0.3);
-  border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px;
-  font-size: 13px; color: var(--green); line-height: 1.5; display: flex; gap:10px; align-items: flex-start;
-}
+.streak-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--amber-bg); color: var(--amber); border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.install-hint { background: var(--green-bg); border: 0.5px solid rgba(29,158,117,0.3); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 12px; font-size: 13px; color: var(--green); line-height: 1.5; display: flex; gap: 10px; align-items: flex-start; }
 .install-hint svg { flex-shrink: 0; width: 20px; height: 20px; margin-top: 1px; stroke: var(--green); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .close-hint { background: none; border: none; color: var(--green); font-size: 18px; cursor: pointer; margin-left: auto; padding: 0 0 0 8px; }
 
-section-divider { display: block; height: 1px; background: var(--border); margin: 4px 0 12px; }
+/* ── CAMERA / AI styles ── */
+.scan-btn { width: 100%; padding: 16px; background: var(--green); border: none; border-radius: var(--radius-sm); color: #fff; font-size: 16px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 12px; transition: opacity 0.2s; }
+.scan-btn:active { opacity: 0.8; }
+.scan-btn svg { width: 22px; height: 22px; stroke: #fff; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.scan-btn:disabled { background: var(--bg4); color: var(--text3); }
+#food-preview { width: 100%; border-radius: var(--radius-sm); max-height: 220px; object-fit: cover; display: none; margin-bottom: 12px; }
+.ai-result { background: var(--bg3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px; display: none; }
+.ai-result-title { font-size: 13px; color: var(--text2); margin-bottom: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.ai-macro-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 14px; }
+.ai-macro-row:last-child { border-bottom: none; }
+.ai-macro-val { font-weight: 600; color: var(--green); }
+.add-to-day-btn { width: 100%; padding: 14px; background: var(--blue); border: none; border-radius: var(--radius-sm); color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; display: none; margin-bottom: 12px; transition: opacity 0.2s; }
+.add-to-day-btn:active { opacity: 0.8; }
+.spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.api-key-card { background: var(--amber-bg); border: 0.5px solid rgba(239,159,39,0.3); border-radius: var(--radius-sm); padding: 14px; margin-bottom: 12px; }
+.api-key-card p { font-size: 13px; color: var(--amber); line-height: 1.6; margin-bottom: 10px; }
+.api-input { width: 100%; padding: 12px; background: var(--bg3); border: 0.5px solid var(--border); border-radius: 8px; color: var(--text); font-size: 14px; outline: none; font-family: monospace; }
+.api-input::placeholder { color: var(--text3); }
+.api-save-btn { width: 100%; padding: 12px; background: var(--amber); border: none; border-radius: 8px; color: #000; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+.toast { position: fixed; bottom: calc(var(--safe-bottom) + 90px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg3); color: var(--text); padding: 10px 20px; border-radius: 20px; font-size: 14px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; border: 0.5px solid var(--border); z-index: 999; }
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+input[type=text], input[type=password] { -webkit-appearance: none; }
 </style>
 </head>
 <body>
@@ -193,105 +125,84 @@ section-divider { display: block; height: 1px; background: var(--border); margin
     </div>
   </div>
 
-  <div class="content" id="main-content">
+  <div class="content">
 
-    <!-- HOME PAGE -->
+    <!-- HOME -->
     <div class="page active" id="page-home">
       <div id="install-hint" class="install-hint" style="display:none">
         <svg viewBox="0 0 24 24"><path d="M12 2v13M8 11l4 4 4-4"/><path d="M20 17v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2"/></svg>
         <span>Добавь на экран: нажми <b>Поделиться →</b> затем <b>На экран Домой</b></span>
         <button class="close-hint" onclick="dismissHint()">×</button>
       </div>
-
       <div class="metrics-row">
-        <div class="metric green">
-          <div class="metric-label">Калории</div>
-          <div class="metric-value" id="m-kcal">0</div>
-          <div class="metric-sub">цель 2650</div>
-        </div>
-        <div class="metric blue">
-          <div class="metric-label">Белок</div>
-          <div class="metric-value" id="m-protein">0г</div>
-          <div class="metric-sub">цель 190г</div>
-        </div>
-        <div class="metric amber">
-          <div class="metric-label">Тренировок</div>
-          <div class="metric-value" id="m-trains">0/3</div>
-          <div class="metric-sub">эта неделя</div>
-        </div>
-        <div class="metric coral">
-          <div class="metric-label">Прогресс</div>
-          <div class="metric-value" id="m-progress">0%</div>
-          <div class="metric-sub">дня</div>
-        </div>
+        <div class="metric green"><div class="metric-label">Калории</div><div class="metric-value" id="m-kcal">0</div><div class="metric-sub">цель 2650</div></div>
+        <div class="metric blue"><div class="metric-label">Белок</div><div class="metric-value" id="m-protein">0г</div><div class="metric-sub">цель 190г</div></div>
+        <div class="metric amber"><div class="metric-label">Тренировок</div><div class="metric-value" id="m-trains">0/3</div><div class="metric-sub">эта неделя</div></div>
+        <div class="metric coral"><div class="metric-label">Прогресс</div><div class="metric-value" id="m-progress">0%</div><div class="metric-sub">дня</div></div>
       </div>
-
       <div class="card">
         <div class="card-title">Питание сегодня</div>
-        <div class="prog-row">
-          <div class="prog-label">Калории</div>
-          <div class="prog-bar"><div class="prog-fill" id="pb-kcal" style="width:0%;background:var(--green)"></div></div>
-          <div class="prog-val" id="pv-kcal">0%</div>
-        </div>
-        <div class="prog-row">
-          <div class="prog-label">Белок</div>
-          <div class="prog-bar"><div class="prog-fill" id="pb-protein" style="width:0%;background:var(--blue)"></div></div>
-          <div class="prog-val" id="pv-protein">0%</div>
-        </div>
-        <div class="prog-row">
-          <div class="prog-label">Углеводы</div>
-          <div class="prog-bar"><div class="prog-fill" id="pb-carbs" style="width:0%;background:var(--amber)"></div></div>
-          <div class="prog-val" id="pv-carbs">0%</div>
-        </div>
-        <div class="prog-row" style="margin-bottom:0">
-          <div class="prog-label">Жиры</div>
-          <div class="prog-bar"><div class="prog-fill" id="pb-fat" style="width:0%;background:var(--coral)"></div></div>
-          <div class="prog-val" id="pv-fat">0%</div>
-        </div>
+        <div class="prog-row"><div class="prog-label">Калории</div><div class="prog-bar"><div class="prog-fill" id="pb-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv-kcal">0%</div></div>
+        <div class="prog-row"><div class="prog-label">Белок</div><div class="prog-bar"><div class="prog-fill" id="pb-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv-protein">0%</div></div>
+        <div class="prog-row"><div class="prog-label">Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv-carbs">0%</div></div>
+        <div class="prog-row" style="margin-bottom:0"><div class="prog-label">Жиры</div><div class="prog-bar"><div class="prog-fill" id="pb-fat" style="width:0%;background:var(--coral)"></div></div><div class="prog-val" id="pv-fat">0%</div></div>
       </div>
-
-      <div class="card">
-        <div class="card-title">Неделя</div>
-        <div class="week-grid" id="week-grid-home"></div>
-      </div>
+      <div class="card"><div class="card-title">Неделя</div><div class="week-grid" id="week-grid-home"></div></div>
     </div>
 
-    <!-- NUTRITION PAGE -->
+    <!-- NUTRITION -->
     <div class="page" id="page-nutrition">
+
+      <!-- API Key setup -->
+      <div id="api-key-setup" class="api-key-card" style="display:none">
+        <p>🤖 Для распознавания еды введи API ключ Anthropic.<br>Он хранится только на твоём устройстве.</p>
+        <input class="api-input" type="password" id="api-key-input" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" spellcheck="false">
+        <button class="api-save-btn" onclick="saveApiKey()">Сохранить ключ</button>
+      </div>
+
+      <!-- Camera scan -->
+      <button class="scan-btn" id="scan-btn" onclick="triggerCamera()">
+        <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        Сфотографировать еду
+      </button>
+      <input type="file" id="food-input" accept="image/*" capture="environment" style="display:none" onchange="handleFoodPhoto(event)">
+
+      <img id="food-preview" alt="Фото еды">
+
+      <div class="ai-result" id="ai-result">
+        <div class="ai-result-title">🤖 Распознано ИИ</div>
+        <div class="ai-macro-row"><span id="ai-food-name" style="color:var(--text);font-weight:500"></span></div>
+        <div class="ai-macro-row"><span>🔥 Калории</span><span class="ai-macro-val" id="ai-kcal">—</span></div>
+        <div class="ai-macro-row"><span>💪 Белок</span><span class="ai-macro-val" id="ai-protein">—</span></div>
+        <div class="ai-macro-row"><span>⚡ Углеводы</span><span class="ai-macro-val" id="ai-carbs">—</span></div>
+        <div class="ai-macro-row"><span>🥑 Жиры</span><span class="ai-macro-val" id="ai-fat">—</span></div>
+        <div style="font-size:11px;color:var(--text3);margin-top:8px" id="ai-note"></div>
+      </div>
+
+      <button class="add-to-day-btn" id="add-btn" onclick="addAiToDay()">➕ Добавить к дню</button>
+
       <div class="card">
-        <div class="card-title">Введи данные за сегодня</div>
+        <div class="card-title">Введи вручную</div>
         <div class="slider-row">
-          <div class="slider-header">
-            <span class="slider-name">🔥 Калории</span>
-            <span class="slider-val" id="sl-lbl-kcal" style="color:var(--green)">0 ккал</span>
-          </div>
+          <div class="slider-header"><span class="slider-name">🔥 Калории</span><span class="slider-val" id="sl-lbl-kcal" style="color:var(--green)">0 ккал</span></div>
           <input type="range" min="0" max="3500" step="50" value="0" id="sl-kcal" oninput="updateSlider()">
         </div>
         <div class="slider-row">
-          <div class="slider-header">
-            <span class="slider-name">💪 Белок</span>
-            <span class="slider-val" id="sl-lbl-protein" style="color:var(--blue)">0г</span>
-          </div>
+          <div class="slider-header"><span class="slider-name">💪 Белок</span><span class="slider-val" id="sl-lbl-protein" style="color:var(--blue)">0г</span></div>
           <input type="range" min="0" max="250" step="5" value="0" id="sl-protein" oninput="updateSlider()">
         </div>
         <div class="slider-row">
-          <div class="slider-header">
-            <span class="slider-name">⚡ Углеводы</span>
-            <span class="slider-val" id="sl-lbl-carbs" style="color:var(--amber)">0г</span>
-          </div>
+          <div class="slider-header"><span class="slider-name">⚡ Углеводы</span><span class="slider-val" id="sl-lbl-carbs" style="color:var(--amber)">0г</span></div>
           <input type="range" min="0" max="400" step="5" value="0" id="sl-carbs" oninput="updateSlider()">
         </div>
         <div class="slider-row">
-          <div class="slider-header">
-            <span class="slider-name">🥑 Жиры</span>
-            <span class="slider-val" id="sl-lbl-fat" style="color:var(--coral)">0г</span>
-          </div>
+          <div class="slider-header"><span class="slider-name">🥑 Жиры</span><span class="slider-val" id="sl-lbl-fat" style="color:var(--coral)">0г</span></div>
           <input type="range" min="0" max="150" step="5" value="0" id="sl-fat" oninput="updateSlider()">
         </div>
       </div>
 
       <div class="card">
-        <div class="card-title">Цели на день</div>
+        <div class="card-title">Прогресс дня</div>
         <div class="prog-row"><div class="prog-label">Калории</div><div class="prog-bar"><div class="prog-fill" id="pb2-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv2-kcal">0%</div></div>
         <div class="prog-row"><div class="prog-label">Белок</div><div class="prog-bar"><div class="prog-fill" id="pb2-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv2-protein">0%</div></div>
         <div class="prog-row"><div class="prog-label">Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb2-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv2-carbs">0%</div></div>
@@ -299,58 +210,49 @@ section-divider { display: block; height: 1px; background: var(--border); margin
       </div>
 
       <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
-        <div style="font-size:13px;color:var(--green);line-height:1.6">
-          <b>Твои нормы:</b><br>
-          🔥 2650 ккал · 💪 190г белок<br>
-          ⚡ 265г углеводы · 🥑 75г жиры
-        </div>
+        <div style="font-size:13px;color:var(--green);line-height:1.6"><b>Твои нормы:</b><br>🔥 2650 ккал · 💪 190г белок<br>⚡ 265г углеводы · 🥑 75г жиры</div>
       </div>
     </div>
 
-    <!-- WORKOUT PAGE -->
+    <!-- WORKOUT -->
     <div class="page" id="page-workout">
       <div class="tab-row">
         <button class="tab-btn active" onclick="showWorkoutTab('A',this)">День A</button>
         <button class="tab-btn" onclick="showWorkoutTab('B',this)">День B</button>
+        <button class="tab-btn" onclick="showWorkoutTab('schedule',this)">План</button>
         <button class="tab-btn" onclick="showWorkoutTab('week',this)">Неделя</button>
       </div>
-
       <div id="workout-A">
-        <div class="card">
-          <div class="card-title">День A — ноги + взрывность</div>
-          <div id="exercises-A"></div>
-        </div>
-        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)">
-          <div style="font-size:13px;color:var(--blue);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div>
-        </div>
+        <div class="card"><div class="card-title">День A — ноги + взрывность</div><div id="exercises-A"></div></div>
+        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)"><div style="font-size:13px;color:var(--blue);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div></div>
       </div>
-
       <div id="workout-B" style="display:none">
+        <div class="card"><div class="card-title">День B — верх + кор</div><div id="exercises-B"></div></div>
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)"><div style="font-size:13px;color:var(--green);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div></div>
+      </div>
+      <div id="workout-schedule" style="display:none">
         <div class="card">
-          <div class="card-title">День B — верх + кор</div>
-          <div id="exercises-B"></div>
-        </div>
-        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
-          <div style="font-size:13px;color:var(--green);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div>
+          <div class="card-title">Расписание недели</div>
+          <div class="exercise-row"><div class="exercise-name">Пн</div><div class="exercise-sets" style="color:var(--amber)">🏀 Баскетбол</div></div>
+          <div class="exercise-row"><div class="exercise-name">Вт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги</div></div>
+          <div class="exercise-row"><div class="exercise-name">Ср</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
+          <div class="exercise-row"><div class="exercise-name">Чт</div><div class="exercise-sets" style="color:var(--green)">День B — верх</div></div>
+          <div class="exercise-row"><div class="exercise-name">Пт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги</div></div>
+          <div class="exercise-row"><div class="exercise-name">Сб</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
+          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Вс</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
         </div>
       </div>
-
       <div id="workout-week" style="display:none">
-        <div class="card">
-          <div class="card-title">Недельный план</div>
-          <div class="week-grid" id="week-grid-workout"></div>
-        </div>
+        <div class="card"><div class="card-title">Недельный план</div><div class="week-grid" id="week-grid-workout"></div></div>
         <div class="card">
           <div class="card-title">Календарь июнь 2026</div>
-          <div class="cal-header-row">
-            <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
-          </div>
+          <div class="cal-header-row"><span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span></div>
           <div class="cal-grid" id="cal-grid"></div>
         </div>
       </div>
     </div>
 
-    <!-- STATS PAGE -->
+    <!-- STATS -->
     <div class="page" id="page-stats">
       <div class="card">
         <div class="card-title">Твои параметры</div>
@@ -368,48 +270,42 @@ section-divider { display: block; height: 1px; background: var(--border); margin
       <div class="card">
         <div class="card-title">Недельный прогресс</div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center">
-            <div style="font-size:28px;font-weight:700;color:var(--green)" id="stat-trains">0</div>
-            <div style="font-size:12px;color:var(--text2)">тренировок</div>
-          </div>
-          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center">
-            <div style="font-size:28px;font-weight:700;color:var(--amber)" id="stat-streak">1</div>
-            <div style="font-size:12px;color:var(--text2)">недель подряд</div>
-          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--green)" id="stat-trains">0</div><div style="font-size:12px;color:var(--text2)">тренировок</div></div>
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px;text-align:center"><div style="font-size:28px;font-weight:700;color:var(--amber)" id="stat-streak">1</div><div style="font-size:12px;color:var(--text2)">недель подряд</div></div>
         </div>
       </div>
-      <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить данные</button>
+      <div class="card">
+        <div class="card-title">API ключ</div>
+        <div style="font-size:13px;color:var(--text2);margin-bottom:10px" id="api-status-text">Не установлен</div>
+        <button onclick="clearApiKey()" style="padding:10px 16px;background:none;border:0.5px solid var(--border);border-radius:8px;color:var(--coral);font-size:13px;cursor:pointer">Удалить ключ</button>
+      </div>
+      <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить все данные</button>
     </div>
 
   </div>
 
   <nav class="navbar">
-    <button class="nav-btn active" onclick="showPage('home',this)" id="nav-home">
-      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-      Главная
+    <button class="nav-btn active" onclick="showPage('home',this)">
+      <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная
     </button>
-    <button class="nav-btn" onclick="showPage('nutrition',this)" id="nav-nutrition">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      Питание
+    <button class="nav-btn" onclick="showPage('nutrition',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Питание
     </button>
-    <button class="nav-btn" onclick="showPage('workout',this)" id="nav-workout">
-      <svg viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 0012 0V4M4 9h2m12 0h2"/></svg>
-      Тренировки
+    <button class="nav-btn" onclick="showPage('workout',this)">
+      <svg viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 0012 0V4M4 9h2m12 0h2"/></svg>Тренировки
     </button>
-    <button class="nav-btn" onclick="showPage('stats',this)" id="nav-stats">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Прогресс
+    <button class="nav-btn" onclick="showPage('stats',this)">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Прогресс
     </button>
   </nav>
 </div>
 
+<div class="toast" id="toast"></div>
+
 <script>
 // ── State ──────────────────────────────────────────
 const todayKey = () => new Date().toISOString().slice(0,10);
-
-function loadState() {
-  try { return JSON.parse(localStorage.getItem('fitness_state') || '{}'); } catch { return {}; }
-}
+function loadState() { try { return JSON.parse(localStorage.getItem('fitness_state') || '{}'); } catch { return {}; } }
 function saveState(s) { localStorage.setItem('fitness_state', JSON.stringify(s)); }
 
 let state = loadState();
@@ -418,241 +314,256 @@ if (!state.weekDone) state.weekDone = {};
 if (!state.exerciseDone) state.exerciseDone = {};
 if (!state.streak) state.streak = 1;
 
-// ── Init ───────────────────────────────────────────
 const todayDate = todayKey();
 const weekStart = getWeekStart();
+if (state.weekStart !== weekStart) { state.weekStart = weekStart; state.weekDone = {}; state.exerciseDone = {}; saveState(state); }
 
-// Clean old week data
-if (state.weekStart !== weekStart) {
-  state.weekStart = weekStart;
-  state.weekDone = {};
-  state.exerciseDone = {};
-  saveState(state);
-}
-
-const exercisesA = [
-  {name:'Приседания со штангой', sets:'4×5'},
-  {name:'Румынская тяга', sets:'3×8'},
-  {name:'Болгарские выпады', sets:'3×10'},
-  {name:'Запрыгивания на ящик', sets:'4×5'},
-  {name:'Подъём на икры', sets:'3×15'},
-];
-const exercisesB = [
-  {name:'Жим лёжа', sets:'4×5'},
-  {name:'Тяга штанги в наклоне', sets:'4×6'},
-  {name:'Жим гантелей стоя', sets:'3×8'},
-  {name:'Подтягивания', sets:'4×max'},
-  {name:'Планка + скручивания', sets:'3×30с'},
-];
-
+const exercisesA = [{name:'Приседания со штангой',sets:'4×5'},{name:'Румынская тяга',sets:'3×8'},{name:'Болгарские выпады',sets:'3×10'},{name:'Запрыгивания на ящик',sets:'4×5'},{name:'Подъём на икры',sets:'3×15'}];
+const exercisesB = [{name:'Жим лёжа',sets:'4×5'},{name:'Тяга штанги в наклоне',sets:'4×6'},{name:'Жим гантелей стоя',sets:'3×8'},{name:'Подтягивания',sets:'4×max'},{name:'Планка + скручивания',sets:'3×30с'}];
 const weekDayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 
-function getWeekStart() {
-  const d = new Date();
-  const day = d.getDay() || 7;
-  d.setDate(d.getDate() - day + 1);
-  return d.toISOString().slice(0,10);
+function getWeekStart() { const d = new Date(); const day = d.getDay()||7; d.setDate(d.getDate()-day+1); return d.toISOString().slice(0,10); }
+
+// ── API Key ────────────────────────────────────────
+function getApiKey() { return localStorage.getItem('anthropic_key') || ''; }
+function saveApiKey() {
+  const val = document.getElementById('api-key-input').value.trim();
+  if (!val.startsWith('sk-ant-')) { showToast('❌ Ключ должен начинаться с sk-ant-'); return; }
+  localStorage.setItem('anthropic_key', val);
+  document.getElementById('api-key-setup').style.display = 'none';
+  updateApiStatus();
+  showToast('✅ Ключ сохранён!');
+}
+function clearApiKey() { localStorage.removeItem('anthropic_key'); updateApiStatus(); showToast('Ключ удалён'); }
+function updateApiStatus() {
+  const has = !!getApiKey();
+  const setup = document.getElementById('api-key-setup');
+  const statusText = document.getElementById('api-status-text');
+  if (setup) setup.style.display = has ? 'none' : 'block';
+  if (statusText) statusText.textContent = has ? '✅ Установлен' : 'Не установлен';
+  const scanBtn = document.getElementById('scan-btn');
+  if (scanBtn) scanBtn.disabled = !has;
 }
 
-// ── Date header ────────────────────────────────────
-function formatDate() {
-  const d = new Date();
-  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
-  const days = ['вс','пн','вт','ср','чт','пт','сб'];
-  return `${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
-}
-document.getElementById('topbar-date').textContent = formatDate();
+// ── Camera / AI ────────────────────────────────────
+let aiData = null;
 
-// ── Install hint ───────────────────────────────────
-const isStandalone = window.navigator.standalone;
-const hintDismissed = localStorage.getItem('hint_dismissed');
-if (!isStandalone && !hintDismissed) {
-  document.getElementById('install-hint').style.display = 'flex';
+function triggerCamera() {
+  if (!getApiKey()) { showToast('Сначала введи API ключ'); return; }
+  document.getElementById('food-input').click();
 }
-function dismissHint() {
-  document.getElementById('install-hint').style.display = 'none';
-  localStorage.setItem('hint_dismissed', '1');
+
+function handleFoodPhoto(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const base64 = e.target.result.split(',')[1];
+    const mediaType = file.type || 'image/jpeg';
+    // Show preview
+    const preview = document.getElementById('food-preview');
+    preview.src = e.target.result;
+    preview.style.display = 'block';
+    // Hide old result
+    document.getElementById('ai-result').style.display = 'none';
+    document.getElementById('add-btn').style.display = 'none';
+    // Show loading
+    const btn = document.getElementById('scan-btn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner"></div> Анализирую...';
+    await analyzeFood(base64, mediaType);
+    btn.disabled = false;
+    btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/></svg> Сфотографировать снова';
+  };
+  reader.readAsDataURL(file);
+  event.target.value = '';
+}
+
+async function analyzeFood(base64, mediaType) {
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': getApiKey(), 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 400,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            { type: 'text', text: 'Определи блюдо на фото и оцени КБЖУ на всю порцию что видна. Ответь ТОЛЬКО JSON без markdown:\n{"name":"название блюда","kcal":число,"protein":число,"carbs":число,"fat":число,"note":"короткое пояснение"}' }
+          ]
+        }]
+      })
+    });
+    const data = await resp.json();
+    if (data.error) { showToast('❌ ' + data.error.message); return; }
+    const text = data.content.map(b => b.text||'').join('');
+    const clean = text.replace(/```json|```/g,'').trim();
+    const parsed = JSON.parse(clean);
+    aiData = parsed;
+    // Show result
+    document.getElementById('ai-food-name').textContent = parsed.name || '';
+    document.getElementById('ai-kcal').textContent = parsed.kcal + ' ккал';
+    document.getElementById('ai-protein').textContent = parsed.protein + 'г';
+    document.getElementById('ai-carbs').textContent = parsed.carbs + 'г';
+    document.getElementById('ai-fat').textContent = parsed.fat + 'г';
+    document.getElementById('ai-note').textContent = parsed.note || '';
+    document.getElementById('ai-result').style.display = 'block';
+    document.getElementById('add-btn').style.display = 'block';
+  } catch(err) {
+    showToast('❌ Ошибка: ' + err.message);
+  }
+}
+
+function addAiToDay() {
+  if (!aiData) return;
+  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
+  n.kcal = Math.min(3500, n.kcal + (aiData.kcal||0));
+  n.protein = Math.min(250, n.protein + (aiData.protein||0));
+  n.carbs = Math.min(400, n.carbs + (aiData.carbs||0));
+  n.fat = Math.min(150, n.fat + (aiData.fat||0));
+  state.nutrition[todayDate] = n;
+  saveState(state);
+  // Update sliders
+  ['kcal','protein','carbs','fat'].forEach(k => {
+    const el = document.getElementById('sl-'+k);
+    if (el) el.value = n[k];
+  });
+  updateSlider();
+  showToast('✅ Добавлено к дню!');
+  document.getElementById('add-btn').style.display = 'none';
+}
+
+// ── Toast ──────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 // ── Navigation ─────────────────────────────────────
 function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + name).classList.add('active');
+  document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active');
 }
-
-// ── Workout tabs ───────────────────────────────────
 function showWorkoutTab(tab, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  ['A','B','week'].forEach(t => {
-    document.getElementById('workout-' + t).style.display = t === tab ? 'block' : 'none';
-  });
+  ['A','B','schedule','week'].forEach(t => { document.getElementById('workout-'+t).style.display = t===tab ? 'block' : 'none'; });
 }
 
 // ── Exercises ──────────────────────────────────────
 function buildExercises(list, id, prefix) {
-  const container = document.getElementById(id);
-  container.innerHTML = '';
+  const c = document.getElementById(id); c.innerHTML = '';
   list.forEach((ex, i) => {
-    const key = prefix + '_' + i;
-    const done = !!(state.exerciseDone[key]);
-    const row = document.createElement('div');
-    row.className = 'exercise-row';
-    row.innerHTML = `
-      <div style="flex:1">
-        <div class="exercise-name" style="${done ? 'color:var(--text3);text-decoration:line-through' : ''}">${ex.name}</div>
-      </div>
-      <div class="exercise-sets" style="margin-right:12px">${ex.sets}</div>
-      <button class="check-btn ${done ? 'done' : ''}" onclick="toggleExercise('${key}','${id}','${prefix}')">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>`;
-    container.appendChild(row);
+    const key = prefix+'_'+i, done = !!state.exerciseDone[key];
+    const row = document.createElement('div'); row.className = 'exercise-row';
+    row.innerHTML = `<div style="flex:1"><div class="exercise-name" style="${done?'color:var(--text3);text-decoration:line-through':''}">${ex.name}</div></div><div class="exercise-sets" style="margin-right:12px">${ex.sets}</div><button class="check-btn ${done?'done':''}" onclick="toggleExercise('${key}','${id}','${prefix}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`;
+    c.appendChild(row);
   });
 }
-
 function toggleExercise(key, id, prefix) {
-  state.exerciseDone[key] = !state.exerciseDone[key];
-  saveState(state);
-  const list = prefix === 'A' ? exercisesA : exercisesB;
-  buildExercises(list, id, prefix);
+  state.exerciseDone[key] = !state.exerciseDone[key]; saveState(state);
+  buildExercises(prefix==='A'?exercisesA:exercisesB, id, prefix);
 }
 
 // ── Week grid ──────────────────────────────────────
-function buildWeekGrid(containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  container.innerHTML = '';
-  const done = Object.values(state.weekDone).filter(Boolean).length;
+function buildWeekGrid(id) {
+  const c = document.getElementById(id); if (!c) return; c.innerHTML = '';
   weekDayNames.forEach((d, i) => {
-    const key = 'day_' + i;
-    const isDone = !!state.weekDone[key];
-    const cell = document.createElement('div');
-    cell.className = 'week-cell';
-    cell.innerHTML = `
-      <div class="week-day-label">${d}</div>
-      <div class="week-dot ${isDone ? 'done' : ''}" onclick="toggleWeekDay('${key}','${containerId}')">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      </div>`;
-    container.appendChild(cell);
+    const key = 'day_'+i, isDone = !!state.weekDone[key];
+    const cell = document.createElement('div'); cell.className = 'week-cell';
+    cell.innerHTML = `<div class="week-cell-label">${d}</div><div class="week-dot ${isDone?'done':''}" onclick="toggleWeekDay('${key}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+    c.appendChild(cell);
   });
   updateMetrics();
 }
-
-function toggleWeekDay(key, containerId) {
-  state.weekDone[key] = !state.weekDone[key];
-  saveState(state);
-  buildWeekGrid('week-grid-home');
-  buildWeekGrid('week-grid-workout');
+function toggleWeekDay(key) {
+  state.weekDone[key] = !state.weekDone[key]; saveState(state);
+  buildWeekGrid('week-grid-home'); buildWeekGrid('week-grid-workout');
 }
 
-// ── Nutrition sliders ──────────────────────────────
+// ── Sliders ────────────────────────────────────────
 function updateSlider() {
   const kcal = parseInt(document.getElementById('sl-kcal').value);
   const protein = parseInt(document.getElementById('sl-protein').value);
   const carbs = parseInt(document.getElementById('sl-carbs').value);
   const fat = parseInt(document.getElementById('sl-fat').value);
-
-  document.getElementById('sl-lbl-kcal').textContent = kcal + ' ккал';
-  document.getElementById('sl-lbl-protein').textContent = protein + 'г';
-  document.getElementById('sl-lbl-carbs').textContent = carbs + 'г';
-  document.getElementById('sl-lbl-fat').textContent = fat + 'г';
-
-  state.nutrition[todayDate] = { kcal, protein, carbs, fat };
+  document.getElementById('sl-lbl-kcal').textContent = kcal+' ккал';
+  document.getElementById('sl-lbl-protein').textContent = protein+'г';
+  document.getElementById('sl-lbl-carbs').textContent = carbs+'г';
+  document.getElementById('sl-lbl-fat').textContent = fat+'г';
+  state.nutrition[todayDate] = {kcal, protein, carbs, fat};
   saveState(state);
-  updateMetrics();
-  updateProgressBars();
+  updateMetrics(); updateProgressBars();
 }
-
 function updateProgressBars() {
-  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
-  const goals = { kcal:2650, protein:190, carbs:265, fat:75 };
+  const n = state.nutrition[todayDate] || {kcal:0,protein:0,carbs:0,fat:0};
+  const goals = {kcal:2650,protein:190,carbs:265,fat:75};
   ['kcal','protein','carbs','fat'].forEach(k => {
-    const pct = Math.min(100, Math.round(n[k] / goals[k] * 100));
-    ['pb-','pb2-'].forEach(pfx => {
-      const el = document.getElementById(pfx+k);
-      if (el) el.style.width = pct + '%';
-    });
-    ['pv-','pv2-'].forEach(pfx => {
-      const el = document.getElementById(pfx+k);
-      if (el) el.textContent = pct + '%';
-    });
+    const pct = Math.min(100, Math.round(n[k]/goals[k]*100));
+    ['pb-','pb2-'].forEach(pfx => { const el = document.getElementById(pfx+k); if(el) el.style.width=pct+'%'; });
+    ['pv-','pv2-'].forEach(pfx => { const el = document.getElementById(pfx+k); if(el) el.textContent=pct+'%'; });
   });
 }
-
 function updateMetrics() {
-  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
-  const trainCount = Object.values(state.weekDone).filter(Boolean).length;
-  const kcalPct = Math.min(100, Math.round(n.kcal/2650*100));
-  const proteinPct = Math.min(100, Math.round(n.protein/190*100));
-  const dayProgress = Math.round((kcalPct + proteinPct) / 2);
-
+  const n = state.nutrition[todayDate] || {kcal:0,protein:0,carbs:0,fat:0};
+  const tc = Object.values(state.weekDone).filter(Boolean).length;
+  const dp = Math.round((Math.min(100,n.kcal/2650*100)+Math.min(100,n.protein/190*100))/2);
   document.getElementById('m-kcal').textContent = n.kcal;
-  document.getElementById('m-protein').textContent = n.protein + 'г';
-  document.getElementById('m-trains').textContent = trainCount + '/3';
-  document.getElementById('m-progress').textContent = dayProgress + '%';
-  document.getElementById('stat-trains').textContent = trainCount;
-  document.getElementById('stat-streak').textContent = state.streak || 1;
-  document.getElementById('streak-badge-val').textContent = (state.streak || 1) + ' нед.';
+  document.getElementById('m-protein').textContent = n.protein+'г';
+  document.getElementById('m-trains').textContent = tc+'/3';
+  document.getElementById('m-progress').textContent = dp+'%';
+  document.getElementById('stat-trains').textContent = tc;
+  document.getElementById('stat-streak').textContent = state.streak||1;
+  document.getElementById('streak-badge-val').textContent = (state.streak||1)+' нед.';
 }
 
 // ── Calendar ───────────────────────────────────────
 function buildCalendar() {
-  const grid = document.getElementById('cal-grid');
-  if (!grid) return;
+  const grid = document.getElementById('cal-grid'); if (!grid) return;
   grid.innerHTML = '';
-  const schedule = {1:'train-a',2:'bball',3:'train-b',5:'train-a',8:'train-b',9:'bball',10:'train-a',12:'train-b',15:'bball',16:'train-a',17:'train-b',19:'bball',22:'train-a',23:'train-b',24:'bball',26:'train-a',29:'train-b',30:'bball'};
+  const sch = {2:'bball',5:'bball',3:'train-a',6:'train-b',7:'train-a',9:'bball',10:'train-a',12:'train-b',13:'train-a',16:'bball',17:'train-a',19:'train-b',20:'train-a',23:'bball',24:'train-a',26:'train-b',27:'train-a',30:'bball'};
   const today = new Date().getDate();
-  for (let e = 0; e < 0; e++) { // June 2026 starts on Monday
+  for (let d=1; d<=30; d++) {
     const el = document.createElement('div');
-    el.style.opacity = '0';
-    grid.appendChild(el);
-  }
-  for (let d = 1; d <= 30; d++) {
-    const el = document.createElement('div');
-    let cls = 'cal-day';
-    if (schedule[d]) cls += ' ' + schedule[d];
-    if (d === today) cls += ' today';
-    el.className = cls;
-    el.textContent = d;
-    grid.appendChild(el);
+    el.className = 'cal-day' + (sch[d]?' '+sch[d]:'') + (d===today?' today':'');
+    el.textContent = d; grid.appendChild(el);
   }
 }
 
-// ── Load saved nutrition ───────────────────────────
+// ── Init ───────────────────────────────────────────
+const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+const days = ['вс','пн','вт','ср','чт','пт','сб'];
+const now = new Date();
+document.getElementById('topbar-date').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]}`;
+
+const isStandalone = window.navigator.standalone;
+if (!isStandalone && !localStorage.getItem('hint_dismissed')) document.getElementById('install-hint').style.display = 'flex';
+function dismissHint() { document.getElementById('install-hint').style.display='none'; localStorage.setItem('hint_dismissed','1'); }
+
 function loadSavedNutrition() {
   const n = state.nutrition[todayDate];
-  if (n) {
-    ['kcal','protein','carbs','fat'].forEach(k => {
-      const el = document.getElementById('sl-' + k);
-      if (el) el.value = n[k] || 0;
-    });
-  }
+  if (n) { ['kcal','protein','carbs','fat'].forEach(k => { const el=document.getElementById('sl-'+k); if(el) el.value=n[k]||0; }); }
 }
 
-// ── Reset ──────────────────────────────────────────
-function resetData() {
-  if (confirm('Сбросить все данные?')) {
-    localStorage.clear();
-    location.reload();
-  }
-}
+function resetData() { if(confirm('Сбросить все данные?')) { localStorage.clear(); location.reload(); } }
 
-// ── Boot ───────────────────────────────────────────
-buildExercises(exercisesA, 'exercises-A', 'A');
-buildExercises(exercisesB, 'exercises-B', 'B');
+buildExercises(exercisesA,'exercises-A','A');
+buildExercises(exercisesB,'exercises-B','B');
 buildWeekGrid('week-grid-home');
 buildWeekGrid('week-grid-workout');
 buildCalendar();
 loadSavedNutrition();
 updateMetrics();
 updateProgressBars();
+updateApiStatus();
 
-// Service worker
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js').catch(() => {});
-}
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
 </body>
 </html>
