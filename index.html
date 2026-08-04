@@ -110,6 +110,47 @@ input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 22px;
 .toast { position: fixed; bottom: calc(var(--safe-bottom) + 90px); left: 50%; transform: translateX(-50%) translateY(20px); background: var(--bg3); color: var(--text); padding: 10px 20px; border-radius: 20px; font-size: 14px; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; border: 0.5px solid var(--border); z-index: 999; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 input[type=text], input[type=password] { -webkit-appearance: none; }
+
+/* ── MEAL styles ── */
+.meal-type-btn { padding:7px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s;white-space:nowrap; }
+.meal-type-btn.active { background:var(--green);border-color:var(--green);color:#fff;font-weight:600; }
+.meal-entry-row { display:flex;align-items:flex-start;gap:10px;padding:11px 0;border-bottom:0.5px solid var(--border); }
+.meal-entry-row:last-child { border-bottom:none; }
+.meal-entry-icon { font-size:20px;flex-shrink:0;margin-top:2px; }
+.meal-entry-info { flex:1; }
+.meal-entry-name { font-size:14px;font-weight:500;color:var(--text); }
+.meal-entry-macros { font-size:11px;color:var(--text3);margin-top:3px; }
+.meal-entry-kcal { font-size:16px;font-weight:700;color:var(--green);flex-shrink:0; }
+
+/* ── FINANCE styles ── */
+.period-btn { padding:7px 14px;background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;color:var(--text2);font-size:13px;cursor:pointer;transition:all 0.15s; }
+.period-btn.active-period { background:var(--green);border-color:var(--green);color:#fff;font-weight:600; }
+.fin-account-card { background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px; }
+.fin-account-icon { font-size:24px;width:40px;text-align:center;flex-shrink:0; }
+.fin-account-info { flex:1; }
+.fin-account-name { font-size:14px;font-weight:500;color:var(--text); }
+.fin-account-balance { font-size:20px;font-weight:700;color:var(--green);margin-top:2px; }
+.fin-account-actions { display:flex;gap:8px;flex-shrink:0; }
+.fin-action-btn { background:none;border:0.5px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text2);font-size:12px;cursor:pointer; }
+.fin-entry-row { display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border); }
+.fin-entry-row:last-child { border-bottom:none; }
+.fin-entry-left { flex:1; }
+.fin-entry-name { font-size:14px;color:var(--text); }
+.fin-entry-meta { font-size:11px;color:var(--text3);margin-top:2px; }
+.fin-entry-amount { font-size:15px;font-weight:600; }
+.fin-source-card { background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:8px; }
+.fin-source-header { display:flex;align-items:center;gap:10px;margin-bottom:10px; }
+.fin-source-name { flex:1;font-size:14px;font-weight:500;color:var(--text); }
+.fin-source-planned { font-size:13px;color:var(--text2); }
+.fin-source-actual { font-size:18px;font-weight:700;color:var(--green); }
+.debt-card { background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:8px; }
+.debt-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px; }
+.debt-person { font-size:15px;font-weight:600;color:var(--text); }
+.debt-amount { font-size:18px;font-weight:700;color:var(--amber); }
+.debt-meta { font-size:12px;color:var(--text3);margin-bottom:8px; }
+.debt-status { display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:12px;font-size:11px;font-weight:600; }
+.debt-status.active { background:var(--amber-bg);color:var(--amber); }
+.debt-status.returned { background:var(--green-bg);color:var(--green); }
 </style>
 </head>
 <body>
@@ -135,8 +176,8 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <button class="close-hint" onclick="dismissHint()">×</button>
       </div>
       <div class="metrics-row">
-        <div class="metric green"><div class="metric-label">Калории</div><div class="metric-value" id="m-kcal">0</div><div class="metric-sub">цель 2650</div></div>
-        <div class="metric blue"><div class="metric-label">Белок</div><div class="metric-value" id="m-protein">0г</div><div class="metric-sub">цель 190г</div></div>
+        <div class="metric green"><div class="metric-label">Калории</div><div class="metric-value" id="m-kcal">0</div><div class="metric-sub">цель 3050</div></div>
+        <div class="metric blue"><div class="metric-label">Белок</div><div class="metric-value" id="m-protein">0г</div><div class="metric-sub">цель 195г</div></div>
         <div class="metric amber"><div class="metric-label">Тренировок</div><div class="metric-value" id="m-trains">0/3</div><div class="metric-sub">эта неделя</div></div>
         <div class="metric coral"><div class="metric-label">Прогресс</div><div class="metric-value" id="m-progress">0%</div><div class="metric-sub">дня</div></div>
       </div>
@@ -166,9 +207,7 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         Сфотографировать еду
       </button>
       <input type="file" id="food-input" accept="image/*" capture="environment" style="display:none" onchange="handleFoodPhoto(event)">
-
       <img id="food-preview" alt="Фото еды">
-
       <div class="ai-result" id="ai-result">
         <div class="ai-result-title">🤖 Распознано ИИ</div>
         <div class="ai-macro-row"><span id="ai-food-name" style="color:var(--text);font-weight:500"></span></div>
@@ -178,39 +217,80 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <div class="ai-macro-row"><span>🥑 Жиры</span><span class="ai-macro-val" id="ai-fat">—</span></div>
         <div style="font-size:11px;color:var(--text3);margin-top:8px" id="ai-note"></div>
       </div>
-
       <button class="add-to-day-btn" id="add-btn" onclick="addAiToDay()">➕ Добавить к дню</button>
 
+      <!-- Итог дня -->
       <div class="card">
-        <div class="card-title">Введи вручную</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div class="card-title" style="margin-bottom:0">Итог дня</div>
+          <div style="font-size:11px;color:var(--text3)" id="meal-count-label">0 приёмов пищи</div>
+        </div>
+        <div class="prog-row"><div class="prog-label">🔥 Калории</div><div class="prog-bar"><div class="prog-fill" id="pb2-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv2-kcal">0%</div></div>
+        <div class="prog-row"><div class="prog-label">💪 Белок</div><div class="prog-bar"><div class="prog-fill" id="pb2-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv2-protein">0%</div></div>
+        <div class="prog-row"><div class="prog-label">⚡ Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb2-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv2-carbs">0%</div></div>
+        <div class="prog-row" style="margin-bottom:8px"><div class="prog-label">🥑 Жиры</div><div class="prog-bar"><div class="prog-fill" id="pb2-fat" style="width:0%;background:var(--coral)"></div></div><div class="prog-val" id="pv2-fat">0%</div></div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding-top:10px;border-top:0.5px solid var(--border)">
+          <div style="text-align:center"><div style="font-size:16px;font-weight:700;color:var(--green)" id="total-kcal">0</div><div style="font-size:10px;color:var(--text3)">ккал</div></div>
+          <div style="text-align:center"><div style="font-size:16px;font-weight:700;color:var(--blue)" id="total-protein">0г</div><div style="font-size:10px;color:var(--text3)">белок</div></div>
+          <div style="text-align:center"><div style="font-size:16px;font-weight:700;color:var(--amber)" id="total-carbs">0г</div><div style="font-size:10px;color:var(--text3)">углев.</div></div>
+          <div style="text-align:center"><div style="font-size:16px;font-weight:700;color:var(--coral)" id="total-fat">0г</div><div style="font-size:10px;color:var(--text3)">жиры</div></div>
+        </div>
+      </div>
+
+      <!-- Добавить приём пищи вручную -->
+      <div class="card">
+        <div class="card-title">Добавить приём пищи</div>
+
+        <!-- Название -->
+        <div style="margin-bottom:12px">
+          <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Название</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px" id="meal-type-btns">
+            <button onclick="setMealName('Завтрак')" class="meal-type-btn">🌅 Завтрак</button>
+            <button onclick="setMealName('Обед')" class="meal-type-btn">☀️ Обед</button>
+            <button onclick="setMealName('Ужин')" class="meal-type-btn">🌙 Ужин</button>
+            <button onclick="setMealName('Перекус')" class="meal-type-btn">🍎 Перекус</button>
+          </div>
+          <input type="text" id="meal-name-input" placeholder="или введи своё..." value=""
+            style="width:100%;padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;outline:none">
+        </div>
+
+        <!-- Слайдеры -->
         <div class="slider-row">
           <div class="slider-header"><span class="slider-name">🔥 Калории</span><span class="slider-val" id="sl-lbl-kcal" style="color:var(--green)">0 ккал</span></div>
-          <input type="range" min="0" max="3500" step="50" value="0" id="sl-kcal" oninput="updateSlider()">
+          <input type="range" min="0" max="2000" step="10" value="0" id="sl-kcal" oninput="updateSlider()">
         </div>
         <div class="slider-row">
           <div class="slider-header"><span class="slider-name">💪 Белок</span><span class="slider-val" id="sl-lbl-protein" style="color:var(--blue)">0г</span></div>
-          <input type="range" min="0" max="250" step="5" value="0" id="sl-protein" oninput="updateSlider()">
+          <input type="range" min="0" max="150" step="1" value="0" id="sl-protein" oninput="updateSlider()">
         </div>
         <div class="slider-row">
           <div class="slider-header"><span class="slider-name">⚡ Углеводы</span><span class="slider-val" id="sl-lbl-carbs" style="color:var(--amber)">0г</span></div>
-          <input type="range" min="0" max="400" step="5" value="0" id="sl-carbs" oninput="updateSlider()">
+          <input type="range" min="0" max="300" step="1" value="0" id="sl-carbs" oninput="updateSlider()">
         </div>
-        <div class="slider-row">
+        <div class="slider-row" style="margin-bottom:16px">
           <div class="slider-header"><span class="slider-name">🥑 Жиры</span><span class="slider-val" id="sl-lbl-fat" style="color:var(--coral)">0г</span></div>
-          <input type="range" min="0" max="150" step="5" value="0" id="sl-fat" oninput="updateSlider()">
+          <input type="range" min="0" max="100" step="1" value="0" id="sl-fat" oninput="updateSlider()">
         </div>
+
+        <button onclick="addMealEntry()" style="width:100%;padding:14px;background:var(--green);border:none;border-radius:var(--radius-sm);color:#fff;font-size:15px;font-weight:600;cursor:pointer">
+          ➕ Добавить приём пищи
+        </button>
       </div>
 
+      <!-- Список приёмов пищи за сегодня -->
       <div class="card">
-        <div class="card-title">Прогресс дня</div>
-        <div class="prog-row"><div class="prog-label">Калории</div><div class="prog-bar"><div class="prog-fill" id="pb2-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv2-kcal">0%</div></div>
-        <div class="prog-row"><div class="prog-label">Белок</div><div class="prog-bar"><div class="prog-fill" id="pb2-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv2-protein">0%</div></div>
-        <div class="prog-row"><div class="prog-label">Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb2-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv2-carbs">0%</div></div>
-        <div class="prog-row" style="margin-bottom:0"><div class="prog-label">Жиры</div><div class="prog-bar"><div class="prog-fill" id="pb2-fat" style="width:0%;background:var(--coral)"></div></div><div class="prog-val" id="pv2-fat">0%</div></div>
+        <div class="card-title">Приёмы пищи сегодня</div>
+        <div id="meals-list">
+          <div style="font-size:13px;color:var(--text3);padding:8px 0">Ещё ничего не добавлено</div>
+        </div>
       </div>
 
       <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
-        <div style="font-size:13px;color:var(--green);line-height:1.6"><b>Твои нормы:</b><br>🔥 2650 ккал · 💪 190г белок<br>⚡ 265г углеводы · 🥑 75г жиры</div>
+        <div style="font-size:13px;color:var(--green);line-height:1.8">
+          <b>Твои нормы (по InBody 02.08.2026):</b><br>
+          🔥 3000–3100 ккал · 💪 195г белок<br>
+          ⚡ 330г углеводы · 🥑 85г жиры
+        </div>
       </div>
     </div>
 
@@ -222,24 +302,61 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <button class="tab-btn" onclick="showWorkoutTab('schedule',this)">План</button>
         <button class="tab-btn" onclick="showWorkoutTab('week',this)">Неделя</button>
       </div>
+
+      <!-- InBody Summary -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(29,158,117,0.15),rgba(55,138,221,0.1));border-color:rgba(29,158,117,0.25);margin-bottom:10px">
+        <div style="font-size:11px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px">📊 InBody 02.08.2026 — 91/100</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;text-align:center">
+          <div><div style="font-size:18px;font-weight:700;color:var(--text)">92.6</div><div style="font-size:10px;color:var(--text3)">вес кг</div></div>
+          <div><div style="font-size:18px;font-weight:700;color:var(--green)">47.0</div><div style="font-size:10px;color:var(--text3)">мышцы кг</div></div>
+          <div><div style="font-size:18px;font-weight:700;color:var(--blue)">10.9</div><div style="font-size:10px;color:var(--text3)">жир %</div></div>
+          <div><div style="font-size:18px;font-weight:700;color:var(--amber)">3151</div><div style="font-size:10px;color:var(--text3)">ккал/день</div></div>
+        </div>
+        <div style="margin-top:8px;padding-top:8px;border-top:0.5px solid rgba(255,255,255,0.08);font-size:12px;color:var(--green)">
+          🔥 За 2 нед: −1.7кг веса · +1.3кг мышц · −2.4кг жира
+        </div>
+      </div>
+
       <div id="workout-A">
-        <div class="card"><div class="card-title">День A — ноги + взрывность</div><div id="exercises-A"></div></div>
-        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)"><div style="font-size:13px;color:var(--blue);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div></div>
+        <div class="card">
+          <div class="card-title">День A — ноги + взрывность</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Вт и Пт · акцент на прыжок и взрыв для баскетбола</div>
+          <div id="exercises-A"></div>
+        </div>
+        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)">
+          <div style="font-size:13px;color:var(--blue);line-height:1.6">📈 Прогрессия: +2.5 кг или +1 повтор каждую неделю</div>
+        </div>
       </div>
+
       <div id="workout-B" style="display:none">
-        <div class="card"><div class="card-title">День B — верх + кор</div><div id="exercises-B"></div></div>
-        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)"><div style="font-size:13px;color:var(--green);line-height:1.6">Каждую неделю + 2.5 кг или +1 повтор 📈</div></div>
+        <div class="card">
+          <div class="card-title">День B — верх + кор</div>
+          <div style="font-size:12px;color:var(--text3);margin-bottom:12px">Чт · руки 120%+ нормы — акцент на силу и стабильность</div>
+          <div id="exercises-B"></div>
+        </div>
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+          <div style="font-size:13px;color:var(--green);line-height:1.6">📈 Прогрессия: +2.5 кг или +1 повтор каждую неделю</div>
+        </div>
       </div>
+
       <div id="workout-schedule" style="display:none">
         <div class="card">
           <div class="card-title">Расписание недели</div>
           <div class="exercise-row"><div class="exercise-name">Пн</div><div class="exercise-sets" style="color:var(--amber)">🏀 Баскетбол</div></div>
-          <div class="exercise-row"><div class="exercise-name">Вт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги</div></div>
-          <div class="exercise-row"><div class="exercise-name">Ср</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
-          <div class="exercise-row"><div class="exercise-name">Чт</div><div class="exercise-sets" style="color:var(--green)">День B — верх</div></div>
-          <div class="exercise-row"><div class="exercise-name">Пт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги</div></div>
-          <div class="exercise-row"><div class="exercise-name">Сб</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
-          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Вс</div><div class="exercise-sets" style="color:var(--text3)">Отдых</div></div>
+          <div class="exercise-row"><div class="exercise-name">Вт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги + взрыв</div></div>
+          <div class="exercise-row"><div class="exercise-name">Ср</div><div class="exercise-sets" style="color:var(--text3)">😴 Отдых / растяжка</div></div>
+          <div class="exercise-row"><div class="exercise-name">Чт</div><div class="exercise-sets" style="color:var(--green)">День B — верх + кор</div></div>
+          <div class="exercise-row"><div class="exercise-name">Пт</div><div class="exercise-sets" style="color:var(--blue)">День A — ноги + взрыв</div></div>
+          <div class="exercise-row"><div class="exercise-name">Сб</div><div class="exercise-sets" style="color:var(--text3)">😴 Отдых</div></div>
+          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Вс</div><div class="exercise-sets" style="color:var(--text3)">😴 Отдых</div></div>
+        </div>
+        <div class="card" style="background:var(--amber-bg);border-color:rgba(239,159,39,0.2)">
+          <div style="font-size:13px;color:var(--amber);line-height:1.7">
+            <b>Питание по InBody:</b><br>
+            🔥 3000–3100 ккал · 💪 195г белок<br>
+            ⚡ 330г углеводы · 🥑 85г жиры<br>
+            <span style="font-size:11px;opacity:0.8">Жир 10.9% — отличный уровень. Цель: набор мышц без роста жира.</span>
+          </div>
         </div>
       </div>
       <div id="workout-week" style="display:none">
@@ -253,6 +370,93 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
     </div>
 
     <!-- STATS -->
+    <!-- GOALS PAGE -->
+    <div class="page" id="page-goals">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="showGoalsTab('vision',this)">🎯 Видение</button>
+        <button class="tab-btn" onclick="showGoalsTab('year',this)">📅 Год</button>
+        <button class="tab-btn" onclick="showGoalsTab('month',this)">🗓 Месяц</button>
+        <button class="tab-btn" onclick="showGoalsTab('daily',this)">✅ День</button>
+      </div>
+
+      <!-- VISION 2033 -->
+      <div id="goals-vision">
+        <div class="card" style="background:linear-gradient(135deg,rgba(55,138,221,0.15),rgba(29,158,117,0.15));border-color:rgba(55,138,221,0.2)">
+          <div style="font-size:11px;font-weight:600;color:var(--blue);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px">Точка С — 2033</div>
+          <div style="font-size:18px;font-weight:700;color:var(--text);line-height:1.4">Антон Волков через 7 лет</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:6px;line-height:1.6">Физически и ментально здоров · Чёткое призвание · Доход от 1 млн/мес · Суперактивный образ жизни · Прекрасная семья</div>
+        </div>
+        <div class="card">
+          <div class="card-title">💼 Бизнес</div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Доход</div><div style="font-size:13px;color:var(--green);font-weight:600">от 1 млн/мес</div></div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Деятельность</div><div style="font-size:13px;color:var(--text2)">Суперидея, меняю мир</div></div>
+          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name" style="font-size:13px">Публичность</div><div style="font-size:13px;color:var(--text2)">100% реализация</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">❤️ Семья</div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Катя</div><div style="font-size:13px;color:var(--green);font-weight:600">Прекрасная спутница</div></div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Сын</div><div style="font-size:13px;color:var(--text2)">Хороший отец, много времени</div></div>
+          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name" style="font-size:13px">Возможно</div><div style="font-size:13px;color:var(--text2)">Ещё дети</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">🌍 Образ жизни</div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Путешествия</div><div style="font-size:13px;color:var(--text2)">Китай, США, Европа, Бали</div></div>
+          <div class="exercise-row"><div class="exercise-name" style="font-size:13px">Активности</div><div style="font-size:13px;color:var(--text2)">Лыжи, дайвинг, трекинг</div></div>
+          <div class="exercise-row" style="border-bottom:none"><div class="exercise-name" style="font-size:13px">База</div><div style="font-size:13px;color:var(--text2)">Квартира + Дом + Машина</div></div>
+        </div>
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+          <div style="font-size:13px;color:var(--green);line-height:1.7">
+            <b>Точка Б — июль 2027</b><br>
+            💼 Чёткая сфера, 100% ответственность<br>
+            🏠 500т на квартиру отложено<br>
+            🦷 Зубы, колени починены, не курю<br>
+            ✈️ Таиланд + Бали + горные лыжи<br>
+            🧠 Меньше тревоги, больше уверенности
+          </div>
+        </div>
+      </div>
+
+      <!-- YEAR GOALS -->
+      <div id="goals-year" style="display:none">
+        <div class="card" style="background:var(--amber-bg);border-color:rgba(239,159,39,0.2)">
+          <div style="font-size:12px;color:var(--amber);font-weight:600;margin-bottom:4px">ГОДОВЫЕ ЦЕЛИ — к июлю 2027</div>
+          <div style="font-size:13px;color:var(--text2)">Нажми на цель чтобы отметить прогресс</div>
+        </div>
+        <div id="year-goals-list"></div>
+        <button onclick="addYearGoal()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">+ Добавить цель</button>
+      </div>
+
+      <!-- MONTH GOALS -->
+      <div id="goals-month" style="display:none">
+        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)">
+          <div style="font-size:12px;color:var(--blue);font-weight:600;margin-bottom:4px" id="month-label">ЦЕЛИ НА АВГУСТ 2026</div>
+          <div style="font-size:13px;color:var(--text2)">Из годовых целей — что делаем этот месяц?</div>
+        </div>
+        <div id="month-goals-list"></div>
+        <button onclick="addMonthGoal()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">+ Добавить задачу на месяц</button>
+      </div>
+
+      <!-- DAILY TASKS -->
+      <div id="goals-daily" style="display:none">
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+          <div style="font-size:12px;color:var(--green);font-weight:600;margin-bottom:4px">ЕЖЕДНЕВНЫЕ ЗАДАЧИ</div>
+          <div style="font-size:13px;color:var(--text2)" id="daily-date-label"></div>
+        </div>
+        <div id="daily-goals-list"></div>
+        <button onclick="addDailyTask()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">+ Добавить задачу на сегодня</button>
+        <div style="height:8px"></div>
+        <div class="card">
+          <div class="card-title">Прогресс дня</div>
+          <div class="prog-row" style="margin-bottom:0">
+            <div class="prog-label">Выполнено</div>
+            <div class="prog-bar"><div class="prog-fill" id="daily-prog-bar" style="width:0%;background:var(--green)"></div></div>
+            <div class="prog-val" id="daily-prog-val">0%</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS PAGE -->
     <div class="page" id="page-stats">
       <div class="card">
         <div class="card-title">Твои параметры</div>
@@ -260,12 +464,6 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <div class="exercise-row"><div class="exercise-name">Рост</div><div class="exercise-sets">197 см</div></div>
         <div class="exercise-row"><div class="exercise-name">Вес</div><div class="exercise-sets">94 кг</div></div>
         <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Базовый обмен</div><div class="exercise-sets">~2200 ккал</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Цели</div>
-        <div class="exercise-row"><div class="exercise-name">Тип тела</div><div class="exercise-sets" style="color:var(--green)">Рекомпозиция</div></div>
-        <div class="exercise-row"><div class="exercise-name">Фокус</div><div class="exercise-sets">Атлетика + внешний вид</div></div>
-        <div class="exercise-row" style="border-bottom:none"><div class="exercise-name">Тренировок/нед</div><div class="exercise-sets">2–3 + баскетбол</div></div>
       </div>
       <div class="card">
         <div class="card-title">Недельный прогресс</div>
@@ -282,20 +480,236 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
       <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить все данные</button>
     </div>
 
+    <!-- FINANCE PAGE -->
+    <div class="page" id="page-finance">
+      <div class="tab-row">
+        <button class="tab-btn active" onclick="showFinTab('overview',this)">📊 Обзор</button>
+        <button class="tab-btn" onclick="showFinTab('accounts',this)">💳 Счета</button>
+        <button class="tab-btn" onclick="showFinTab('income',this)">📈 Доходы</button>
+        <button class="tab-btn" onclick="showFinTab('expenses',this)">📉 Расходы</button>
+        <button class="tab-btn" onclick="showFinTab('debts',this)">🤝 Долги</button>
+      </div>
+
+      <!-- OVERVIEW -->
+      <div id="fin-overview">
+        <div class="metrics-row" style="grid-template-columns:1fr 1fr 1fr;gap:8px">
+          <div class="metric green"><div class="metric-label">Активы</div><div class="metric-value" id="fin-total-assets" style="font-size:18px">0₽</div><div class="metric-sub">все счета</div></div>
+          <div class="metric blue"><div class="metric-label">Доходы</div><div class="metric-value" id="fin-total-income" style="font-size:18px">0₽</div><div class="metric-sub" id="fin-period-label">месяц</div></div>
+          <div class="metric coral"><div class="metric-label">Расходы</div><div class="metric-value" id="fin-total-expenses" style="font-size:18px">0₽</div><div class="metric-sub">месяц</div></div>
+        </div>
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+            <div class="card-title" style="margin-bottom:0">Баланс месяца</div>
+            <div id="fin-balance" style="font-size:18px;font-weight:700;color:var(--green)">0₽</div>
+          </div>
+          <div class="prog-row" style="margin-bottom:0">
+            <div class="prog-label">Расходы</div>
+            <div class="prog-bar"><div class="prog-fill" id="fin-expense-bar" style="width:0%;background:var(--coral)"></div></div>
+            <div class="prog-val" id="fin-expense-pct">0%</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Долги выданные</div>
+          <div id="fin-debts-summary"></div>
+          <div style="display:flex;justify-content:space-between;padding-top:8px;border-top:0.5px solid var(--border);margin-top:4px">
+            <span style="font-size:13px;color:var(--text2)">Итого к возврату</span>
+            <span style="font-size:14px;font-weight:700;color:var(--amber)" id="fin-debts-total">0₽</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Период анализа</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button onclick="setFinPeriod('month',this)" class="period-btn active-period">Месяц</button>
+            <button onclick="setFinPeriod('quarter',this)" class="period-btn">Квартал</button>
+            <button onclick="setFinPeriod('year',this)" class="period-btn">Год</button>
+            <button onclick="setFinPeriod('all',this)" class="period-btn">Всё время</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCOUNTS -->
+      <div id="fin-accounts" style="display:none">
+        <div class="card" style="background:var(--blue-bg);border-color:rgba(55,138,221,0.2)">
+          <div style="font-size:13px;color:var(--blue)">Все твои счета и носители денег. Обновляй остатки вручную когда нужно.</div>
+        </div>
+        <div id="accounts-list"></div>
+        <button onclick="addAccount()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer">+ Добавить счёт / кошелёк</button>
+      </div>
+
+      <!-- INCOME -->
+      <div id="fin-income" style="display:none">
+        <div class="card" style="background:var(--green-bg);border-color:rgba(29,158,117,0.2)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:13px;color:var(--green)">Планируемые и фактические доходы</div>
+            <div style="font-size:18px;font-weight:700;color:var(--green)" id="income-total-display">0₽</div>
+          </div>
+        </div>
+        <div id="income-sources-list"></div>
+        <button onclick="addIncomeSource()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-bottom:12px">+ Добавить источник дохода</button>
+        <div class="card">
+          <div class="card-title">История поступлений</div>
+          <div id="income-history"></div>
+          <button onclick="addIncomeEntry()" style="width:100%;padding:12px;background:none;border:1px dashed var(--border);border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;margin-top:8px">+ Записать поступление</button>
+        </div>
+      </div>
+
+      <!-- EXPENSES -->
+      <div id="fin-expenses" style="display:none">
+        <div class="card" style="background:var(--coral-bg);border-color:rgba(216,90,48,0.2)">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div style="font-size:13px;color:var(--coral)">Расходы по категориям</div>
+            <div style="font-size:18px;font-weight:700;color:var(--coral)" id="expenses-total-display">0₽</div>
+          </div>
+        </div>
+        <div id="expense-categories-list"></div>
+        <button onclick="addExpenseCategory()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-bottom:12px">+ Добавить категорию</button>
+        <div class="card">
+          <div class="card-title">История расходов</div>
+          <div id="expenses-history"></div>
+          <button onclick="addExpenseEntry()" style="width:100%;padding:12px;background:none;border:1px dashed var(--border);border-radius:8px;color:var(--text2);font-size:13px;cursor:pointer;margin-top:8px">+ Записать расход</button>
+        </div>
+      </div>
+
+      <!-- DEBTS -->
+      <div id="fin-debts" style="display:none">
+        <div class="card" style="background:var(--amber-bg);border-color:rgba(239,159,39,0.2)">
+          <div style="font-size:13px;color:var(--amber);line-height:1.5">Деньги которые ты дал в долг. Отображаются как расход, но ожидаются к возврату.</div>
+        </div>
+        <div id="debts-list"></div>
+        <button onclick="addDebt()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer">+ Добавить долг</button>
+      </div>
+    </div>
+
+    <!-- SLEEP PAGE -->
+    <div class="page" id="page-sleep">
+
+      <!-- Today's entry -->
+      <div class="card">
+        <div class="card-title">😴 Сегодняшний сон</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px">
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">🌙 Лёг спать</div>
+            <input type="time" id="sleep-time" value="23:00"
+              style="width:100%;padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;outline:none;text-align:center">
+          </div>
+          <div>
+            <div style="font-size:12px;color:var(--text2);margin-bottom:6px">☀️ Проснулся</div>
+            <input type="time" id="wake-time" value="07:00"
+              style="width:100%;padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text);font-size:16px;outline:none;text-align:center">
+          </div>
+        </div>
+
+        <!-- Hours display -->
+        <div style="text-align:center;padding:12px 0;margin-bottom:16px">
+          <div style="font-size:48px;font-weight:700;letter-spacing:-2px" id="sleep-hours-display">8.0</div>
+          <div style="font-size:13px;color:var(--text2);margin-top:2px" id="sleep-label">часов сна</div>
+          <div style="display:inline-block;padding:4px 12px;border-radius:12px;font-size:12px;font-weight:600;margin-top:8px" id="sleep-quality-badge">—</div>
+        </div>
+
+        <!-- Quality slider -->
+        <div style="margin-bottom:16px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:13px;color:var(--text2)">Качество сна</span>
+            <span style="font-size:14px;font-weight:600;color:var(--blue)" id="sleep-quality-val">7</span>
+          </div>
+          <input type="range" min="1" max="10" step="1" value="7" id="sleep-quality"
+            oninput="updateSleepPreview()">
+          <div style="display:flex;justify-content:space-between;margin-top:4px;font-size:10px;color:var(--text3)">
+            <span>Ужасно</span><span>Нормально</span><span>Отлично</span>
+          </div>
+        </div>
+
+        <button onclick="saveSleepEntry()" style="width:100%;padding:14px;background:var(--blue);border:none;border-radius:var(--radius-sm);color:#fff;font-size:15px;font-weight:600;cursor:pointer">
+          Сохранить сон
+        </button>
+      </div>
+
+      <!-- Weekly stats -->
+      <div class="card">
+        <div class="card-title">📊 Последние 7 дней</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px">
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:var(--blue)" id="sleep-avg">—</div>
+            <div style="font-size:11px;color:var(--text2)">ср. часов</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:var(--green)" id="sleep-best">—</div>
+            <div style="font-size:11px;color:var(--text2)">лучший</div>
+          </div>
+          <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+            <div style="font-size:22px;font-weight:700;color:var(--amber)" id="sleep-qual-avg">—</div>
+            <div style="font-size:11px;color:var(--text2)">качество</div>
+          </div>
+        </div>
+
+        <!-- Bar chart -->
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;height:80px;gap:4px" id="sleep-chart"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:6px" id="sleep-chart-labels"></div>
+      </div>
+
+      <!-- History -->
+      <div class="card">
+        <div class="card-title">История сна</div>
+        <div id="sleep-history"></div>
+      </div>
+    </div>
+
+    <!-- HABITS PAGE -->
+    <div class="page" id="page-habits">
+
+      <!-- Today header -->
+      <div class="card" style="background:linear-gradient(135deg,rgba(29,158,117,0.15),rgba(55,138,221,0.1));border-color:rgba(29,158,117,0.2)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div>
+            <div style="font-size:12px;color:var(--green);font-weight:600;text-transform:uppercase;letter-spacing:0.05em">Сегодня</div>
+            <div style="font-size:15px;color:var(--text);font-weight:500" id="habits-date-label"></div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:32px;font-weight:700;color:var(--green)" id="habits-score">0/0</div>
+            <div style="font-size:11px;color:var(--text2)">выполнено</div>
+          </div>
+        </div>
+        <div style="height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden">
+          <div id="habits-progress-bar" style="height:100%;background:var(--green);border-radius:4px;transition:width 0.4s;width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Habits checklist -->
+      <div id="habits-list"></div>
+
+      <!-- Add habit button -->
+      <button onclick="addHabit()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-bottom:12px">+ Добавить привычку</button>
+
+      <!-- Weekly heatmap -->
+      <div class="card">
+        <div class="card-title">📅 Streak — последние 14 дней</div>
+        <div id="habits-heatmap" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+
+      <!-- Stats -->
+      <div class="card">
+        <div class="card-title">🏆 Статистика</div>
+        <div id="habits-stats"></div>
+      </div>
+    </div>
+
   </div>
 
   <nav class="navbar">
     <button class="nav-btn active" onclick="showPage('home',this)">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная
     </button>
-    <button class="nav-btn" onclick="showPage('nutrition',this)">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Питание
+    <button class="nav-btn" onclick="showPage('goals',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Цели
     </button>
-    <button class="nav-btn" onclick="showPage('workout',this)">
-      <svg viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 0012 0V4M4 9h2m12 0h2"/></svg>Тренировки
+    <button class="nav-btn" onclick="showPage('habits',this)">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>Привычки
     </button>
-    <button class="nav-btn" onclick="showPage('stats',this)">
-      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>Прогресс
+    <button class="nav-btn" onclick="showPage('finance',this)">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Финансы
+    </button>
+    <button class="nav-btn" onclick="showPage('sleep',this)">
+      <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>Сон
     </button>
   </nav>
 </div>
@@ -318,8 +732,22 @@ const todayDate = todayKey();
 const weekStart = getWeekStart();
 if (state.weekStart !== weekStart) { state.weekStart = weekStart; state.weekDone = {}; state.exerciseDone = {}; saveState(state); }
 
-const exercisesA = [{name:'Приседания со штангой',sets:'4×5'},{name:'Румынская тяга',sets:'3×8'},{name:'Болгарские выпады',sets:'3×10'},{name:'Запрыгивания на ящик',sets:'4×5'},{name:'Подъём на икры',sets:'3×15'}];
-const exercisesB = [{name:'Жим лёжа',sets:'4×5'},{name:'Тяга штанги в наклоне',sets:'4×6'},{name:'Жим гантелей стоя',sets:'3×8'},{name:'Подтягивания',sets:'4×max'},{name:'Планка + скручивания',sets:'3×30с'}];
+const exercisesA = [
+  {name:'Приседания со штангой', sets:'4×5', note:'Основа взрывности. Держи спину прямо.', url:'https://www.youtube.com/watch?v=ultWZbUMPL8'},
+  {name:'Румынская тяга', sets:'3×8', note:'Ноги 116% нормы — укрепляем заднюю цепь.', url:'https://www.youtube.com/watch?v=JCXUYuzwNrM'},
+  {name:'Болгарские выпады', sets:'3×10', note:'Баланс и стабилизация для баскетбола.', url:'https://www.youtube.com/watch?v=2C-uNgKwPLE'},
+  {name:'Запрыгивания на ящик', sets:'5×5', note:'Взрывная сила — ключ к прыжку в баскетболе.', url:'https://www.youtube.com/watch?v=52r_Ul5k03g'},
+  {name:'Подъём на икры стоя', sets:'4×15', note:'Финальный акцент на толчок.', url:'https://www.youtube.com/watch?v=YMmgqO8Jo7k'},
+  {name:'Планка с касанием плеч', sets:'3×20', note:'Стабильность корпуса для смены направления.', url:'https://www.youtube.com/watch?v=dvkIaarnf0g'},
+];
+const exercisesB = [
+  {name:'Жим штанги лёжа', sets:'4×5', note:'Руки 120%+ нормы — акцент на силу.', url:'https://www.youtube.com/watch?v=rT7DgCr-3pg'},
+  {name:'Тяга штанги в наклоне', sets:'4×6', note:'Туловище 109% — добавляем спину.', url:'https://www.youtube.com/watch?v=kBWAon7ItDw'},
+  {name:'Жим гантелей стоя', sets:'3×8', note:'Плечи для защиты при контакте в баскетболе.', url:'https://www.youtube.com/watch?v=qEwKCR5JCog'},
+  {name:'Подтягивания широким хватом', sets:'4×max', note:'Отношение ВКЖ/ОКЖ 0.378 — работаем на баланс.', url:'https://www.youtube.com/watch?v=eGo4IYlbE5g'},
+  {name:'Отжимания на брусьях', sets:'3×10', note:'Трицепс + грудь + стабилизаторы.', url:'https://www.youtube.com/watch?v=2z8JmcrW-As'},
+  {name:'Скручивания на пресс', sets:'3×15', note:'ВЖ уровень 4 (норма) — поддерживаем кор.', url:'https://www.youtube.com/watch?v=Xyd_fa5zoEU'},
+];
 const weekDayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
 
 function getWeekStart() { const d = new Date(); const day = d.getDay()||7; d.setDate(d.getDate()-day+1); return d.toISOString().slice(0,10); }
@@ -418,20 +846,17 @@ async function analyzeFood(base64, mediaType) {
 
 function addAiToDay() {
   if (!aiData) return;
-  const n = state.nutrition[todayDate] || { kcal:0, protein:0, carbs:0, fat:0 };
-  n.kcal = Math.min(3500, n.kcal + (aiData.kcal||0));
-  n.protein = Math.min(250, n.protein + (aiData.protein||0));
-  n.carbs = Math.min(400, n.carbs + (aiData.carbs||0));
-  n.fat = Math.min(150, n.fat + (aiData.fat||0));
-  state.nutrition[todayDate] = n;
-  saveState(state);
-  // Update sliders
-  ['kcal','protein','carbs','fat'].forEach(k => {
-    const el = document.getElementById('sl-'+k);
-    if (el) el.value = n[k];
+  const meals = loadMeals();
+  meals.push({
+    id: 'meal'+Date.now(),
+    name: aiData.name || 'Блюдо',
+    kcal: aiData.kcal||0, protein: aiData.protein||0,
+    carbs: aiData.carbs||0, fat: aiData.fat||0,
+    time: new Date().toTimeString().slice(0,5)
   });
-  updateSlider();
-  showToast('✅ Добавлено к дню!');
+  saveMeals(meals);
+  renderMeals();
+  showToast('✅ ' + (aiData.name||'Блюдо') + ' добавлено!');
   document.getElementById('add-btn').style.display = 'none';
 }
 
@@ -461,8 +886,24 @@ function buildExercises(list, id, prefix) {
   const c = document.getElementById(id); c.innerHTML = '';
   list.forEach((ex, i) => {
     const key = prefix+'_'+i, done = !!state.exerciseDone[key];
-    const row = document.createElement('div'); row.className = 'exercise-row';
-    row.innerHTML = `<div style="flex:1"><div class="exercise-name" style="${done?'color:var(--text3);text-decoration:line-through':''}">${ex.name}</div></div><div class="exercise-sets" style="margin-right:12px">${ex.sets}</div><button class="check-btn ${done?'done':''}" onclick="toggleExercise('${key}','${id}','${prefix}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>`;
+    const row = document.createElement('div');
+    row.style.cssText = 'padding:12px 0;border-bottom:0.5px solid var(--border);';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:${ex.note?'6px':'0'}">
+        <button class="check-btn ${done?'done':''}" onclick="toggleExercise('${key}','${id}','${prefix}')">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+        <div style="flex:1">
+          <div class="exercise-name" style="${done?'color:var(--text3);text-decoration:line-through':''}">${ex.name}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="exercise-sets">${ex.sets}</span>
+          ${ex.url ? `<a href="${ex.url}" target="_blank" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;background:rgba(255,0,0,0.15);border-radius:6px;text-decoration:none;font-size:14px" title="Смотреть на YouTube">▶</a>` : ''}
+        </div>
+      </div>
+      ${ex.note ? `<div style="font-size:11px;color:var(--text3);padding-left:38px;line-height:1.4">${ex.note}</div>` : ''}`;
+    const lastRow = i === list.length - 1;
+    if (lastRow) row.style.borderBottom = 'none';
     c.appendChild(row);
   });
 }
@@ -487,40 +928,142 @@ function toggleWeekDay(key) {
   buildWeekGrid('week-grid-home'); buildWeekGrid('week-grid-workout');
 }
 
-// ── Sliders ────────────────────────────────────────
-function updateSlider() {
-  const kcal = parseInt(document.getElementById('sl-kcal').value);
-  const protein = parseInt(document.getElementById('sl-protein').value);
-  const carbs = parseInt(document.getElementById('sl-carbs').value);
-  const fat = parseInt(document.getElementById('sl-fat').value);
-  document.getElementById('sl-lbl-kcal').textContent = kcal+' ккал';
-  document.getElementById('sl-lbl-protein').textContent = protein+'г';
-  document.getElementById('sl-lbl-carbs').textContent = carbs+'г';
-  document.getElementById('sl-lbl-fat').textContent = fat+'г';
-  state.nutrition[todayDate] = {kcal, protein, carbs, fat};
-  saveState(state);
-  updateMetrics(); updateProgressBars();
+// ── MEAL TRACKING ──────────────────────────────────
+const MEAL_ICONS = {'Завтрак':'🌅','Обед':'☀️','Ужин':'🌙','Перекус':'🍎'};
+
+function loadMeals() {
+  return JSON.parse(localStorage.getItem('meals_'+todayDate) || '[]');
 }
-function updateProgressBars() {
-  const n = state.nutrition[todayDate] || {kcal:0,protein:0,carbs:0,fat:0};
-  const goals = {kcal:2650,protein:190,carbs:265,fat:75};
-  ['kcal','protein','carbs','fat'].forEach(k => {
-    const pct = Math.min(100, Math.round(n[k]/goals[k]*100));
-    ['pb-','pb2-'].forEach(pfx => { const el = document.getElementById(pfx+k); if(el) el.style.width=pct+'%'; });
-    ['pv-','pv2-'].forEach(pfx => { const el = document.getElementById(pfx+k); if(el) el.textContent=pct+'%'; });
+function saveMeals(meals) { localStorage.setItem('meals_'+todayDate, JSON.stringify(meals)); }
+
+function getMealTotals() {
+  const meals = loadMeals();
+  return meals.reduce((t, m) => ({
+    kcal: t.kcal + (m.kcal||0),
+    protein: t.protein + (m.protein||0),
+    carbs: t.carbs + (m.carbs||0),
+    fat: t.fat + (m.fat||0),
+  }), {kcal:0, protein:0, carbs:0, fat:0});
+}
+
+function setMealName(name) {
+  document.getElementById('meal-name-input').value = name;
+  document.querySelectorAll('.meal-type-btn').forEach(b => {
+    b.classList.toggle('active', b.textContent.includes(name));
   });
 }
+
+function updateSlider() {
+  const kcal    = parseInt(document.getElementById('sl-kcal').value);
+  const protein = parseInt(document.getElementById('sl-protein').value);
+  const carbs   = parseInt(document.getElementById('sl-carbs').value);
+  const fat     = parseInt(document.getElementById('sl-fat').value);
+  document.getElementById('sl-lbl-kcal').textContent    = kcal + ' ккал';
+  document.getElementById('sl-lbl-protein').textContent = protein + 'г';
+  document.getElementById('sl-lbl-carbs').textContent   = carbs + 'г';
+  document.getElementById('sl-lbl-fat').textContent     = fat + 'г';
+}
+
+function addMealEntry() {
+  const name    = document.getElementById('meal-name-input').value.trim() || 'Приём пищи';
+  const kcal    = parseInt(document.getElementById('sl-kcal').value);
+  const protein = parseInt(document.getElementById('sl-protein').value);
+  const carbs   = parseInt(document.getElementById('sl-carbs').value);
+  const fat     = parseInt(document.getElementById('sl-fat').value);
+  if (kcal === 0 && protein === 0 && carbs === 0 && fat === 0) {
+    showToast('⚠️ Введи хотя бы одно значение');
+    return;
+  }
+  const meals = loadMeals();
+  meals.push({ id: 'meal'+Date.now(), name, kcal, protein, carbs, fat,
+    time: new Date().toTimeString().slice(0,5) });
+  saveMeals(meals);
+  // Reset sliders
+  ['kcal','protein','carbs','fat'].forEach(k => {
+    document.getElementById('sl-'+k).value = 0;
+  });
+  updateSlider();
+  document.getElementById('meal-name-input').value = '';
+  document.querySelectorAll('.meal-type-btn').forEach(b => b.classList.remove('active'));
+  renderMeals();
+  showToast('✅ ' + name + ' добавлен');
+}
+
+function deleteMealEntry(id) {
+  const meals = loadMeals().filter(m => m.id !== id);
+  saveMeals(meals);
+  renderMeals();
+}
+
+function renderMeals() {
+  const meals   = loadMeals();
+  const totals  = getMealTotals();
+  const goals   = {kcal:3050, protein:195, carbs:330, fat:85};
+  const list    = document.getElementById('meals-list');
+  const countLbl = document.getElementById('meal-count-label');
+  if (countLbl) countLbl.textContent = meals.length + ' приём' + (meals.length===1?'':'ов') + ' пищи';
+
+  // Meals list
+  if (meals.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0">Ещё ничего не добавлено</div>';
+  } else {
+    list.innerHTML = meals.map(m => {
+      const icon = MEAL_ICONS[m.name] || '🍽️';
+      return `<div class="meal-entry-row">
+        <div class="meal-entry-icon">${icon}</div>
+        <div class="meal-entry-info">
+          <div class="meal-entry-name">${m.name} <span style="font-size:11px;color:var(--text3)">${m.time||''}</span></div>
+          <div class="meal-entry-macros">💪${m.protein}г · ⚡${m.carbs}г · 🥑${m.fat}г</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="meal-entry-kcal">${m.kcal}</div>
+          <button onclick="deleteMealEntry('${m.id}')" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0">×</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Totals display
+  ['kcal','protein','carbs','fat'].forEach(k => {
+    const pct = Math.min(100, Math.round(totals[k] / goals[k] * 100));
+    const pb2 = document.getElementById('pb2-'+k);
+    const pv2 = document.getElementById('pv2-'+k);
+    const pb  = document.getElementById('pb-'+k);
+    const pv  = document.getElementById('pv-'+k);
+    if (pb2) pb2.style.width = pct + '%';
+    if (pv2) pv2.textContent = pct + '%';
+    if (pb)  pb.style.width  = pct + '%';
+    if (pv)  pv.textContent  = pct + '%';
+  });
+
+  const tkcal = document.getElementById('total-kcal');
+  const tprot = document.getElementById('total-protein');
+  const tcarb = document.getElementById('total-carbs');
+  const tfat  = document.getElementById('total-fat');
+  if (tkcal) tkcal.textContent = totals.kcal;
+  if (tprot) tprot.textContent = totals.protein + 'г';
+  if (tcarb) tcarb.textContent = totals.carbs + 'г';
+  if (tfat)  tfat.textContent  = totals.fat + 'г';
+
+  updateMetrics();
+}
+
+function updateProgressBars() { renderMeals(); }
+
 function updateMetrics() {
-  const n = state.nutrition[todayDate] || {kcal:0,protein:0,carbs:0,fat:0};
-  const tc = Object.values(state.weekDone).filter(Boolean).length;
-  const dp = Math.round((Math.min(100,n.kcal/2650*100)+Math.min(100,n.protein/190*100))/2);
-  document.getElementById('m-kcal').textContent = n.kcal;
-  document.getElementById('m-protein').textContent = n.protein+'г';
-  document.getElementById('m-trains').textContent = tc+'/3';
-  document.getElementById('m-progress').textContent = dp+'%';
-  document.getElementById('stat-trains').textContent = tc;
-  document.getElementById('stat-streak').textContent = state.streak||1;
-  document.getElementById('streak-badge-val').textContent = (state.streak||1)+' нед.';
+  const totals = getMealTotals();
+  const tc  = Object.values(state.weekDone).filter(Boolean).length;
+  const dp  = Math.round((Math.min(100, totals.kcal/3050*100) + Math.min(100, totals.protein/195*100)) / 2);
+  document.getElementById('m-kcal').textContent    = totals.kcal;
+  document.getElementById('m-protein').textContent = totals.protein + 'г';
+  document.getElementById('m-trains').textContent  = tc + '/3';
+  document.getElementById('m-progress').textContent = dp + '%';
+  const st = document.getElementById('stat-trains');
+  const ss = document.getElementById('stat-streak');
+  const sb = document.getElementById('streak-badge-val');
+  if (st) st.textContent = tc;
+  if (ss) ss.textContent = state.streak || 1;
+  if (sb) sb.textContent = (state.streak||1) + ' нед.';
 }
 
 // ── Calendar ───────────────────────────────────────
@@ -553,15 +1096,985 @@ function loadSavedNutrition() {
 
 function resetData() { if(confirm('Сбросить все данные?')) { localStorage.clear(); location.reload(); } }
 
+// ── GOALS SYSTEM ───────────────────────────────────
+
+// Default year goals from стратсессия
+const defaultYearGoals = [
+  {id:'y1', sphere:'💼', title:'Определить чёткую сферу деятельности', progress:0},
+  {id:'y2', sphere:'💼', title:'Выйти на публичность в своём деле', progress:0},
+  {id:'y3', sphere:'💼', title:'Увеличить доход до Д2 уровня', progress:0},
+  {id:'y4', sphere:'🏠', title:'Накопить 500т на квартиру', progress:0},
+  {id:'y5', sphere:'🦷', title:'Вылечить зубы полностью', progress:0},
+  {id:'y6', sphere:'🦵', title:'Починить колени', progress:0},
+  {id:'y7', sphere:'🚬', title:'Бросить курить', progress:0},
+  {id:'y8', sphere:'❤️', title:'Качественное время с сыном — 1-3р в неделю', progress:0},
+  {id:'y9', sphere:'❤️', title:'Вложиться 100% в отношения с Катей', progress:0},
+  {id:'y10', sphere:'✈️', title:'Таиланд или Бали', progress:0},
+  {id:'y11', sphere:'⛷️', title:'Горные лыжи зимой', progress:0},
+  {id:'y12', sphere:'🧠', title:'Снизить тревожность, повысить уверенность', progress:0},
+];
+
+function loadGoals() {
+  return {
+    yearGoals: JSON.parse(localStorage.getItem('year_goals') || JSON.stringify(defaultYearGoals)),
+    monthGoals: JSON.parse(localStorage.getItem('month_goals') || '[]'),
+    dailyTasks: JSON.parse(localStorage.getItem('daily_tasks_' + todayDate) || '[]'),
+  };
+}
+function saveYearGoals(g) { localStorage.setItem('year_goals', JSON.stringify(g)); }
+function saveMonthGoals(g) { localStorage.setItem('month_goals', JSON.stringify(g)); }
+function saveDailyTasks(g) { localStorage.setItem('daily_tasks_' + todayDate, JSON.stringify(g)); }
+
+// Goals tab switching
+function showGoalsTab(tab, btn) {
+  document.querySelectorAll('#page-goals .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['vision','year','month','daily'].forEach(t => {
+    const el = document.getElementById('goals-'+t);
+    if (el) el.style.display = t===tab ? 'block' : 'none';
+  });
+  if (tab==='year') renderYearGoals();
+  if (tab==='month') renderMonthGoals();
+  if (tab==='daily') renderDailyTasks();
+}
+
+// ── YEAR GOALS ─────────────────────────────────────
+function renderYearGoals() {
+  const goals = loadGoals().yearGoals;
+  const list = document.getElementById('year-goals-list');
+  list.innerHTML = '';
+  goals.forEach((g, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '10px';
+    card.innerHTML = `
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px">
+        <span style="font-size:20px">${g.sphere}</span>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:500;color:var(--text);line-height:1.4">${g.title}</div>
+          <div style="font-size:12px;color:var(--text3);margin-top:2px">Прогресс: ${g.progress}%</div>
+        </div>
+        <button onclick="deleteYearGoal(${i})" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer;padding:0;line-height:1">×</button>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden">
+          <div style="width:${g.progress}%;height:100%;background:${g.progress>=100?'var(--green)':g.progress>=50?'var(--blue)':'var(--amber)'};border-radius:3px;transition:width 0.3s"></div>
+        </div>
+        <input type="range" min="0" max="100" step="5" value="${g.progress}"
+          style="width:80px;height:4px"
+          oninput="updateYearProgress(${i}, this.value)">
+      </div>`;
+    list.appendChild(card);
+  });
+  // Summary
+  const total = goals.reduce((s,g)=>s+g.progress,0);
+  const avg = goals.length ? Math.round(total/goals.length) : 0;
+  const summary = document.createElement('div');
+  summary.className = 'card';
+  summary.style.background = 'var(--green-bg)';
+  summary.style.borderColor = 'rgba(29,158,117,0.2)';
+  summary.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center"><div style="font-size:13px;color:var(--green);font-weight:600">Общий прогресс к Точке Б</div><div style="font-size:24px;font-weight:700;color:var(--green)">${avg}%</div></div><div style="margin-top:8px;height:8px;background:rgba(29,158,117,0.2);border-radius:4px;overflow:hidden"><div style="width:${avg}%;height:100%;background:var(--green);border-radius:4px;transition:width 0.4s"></div></div>`;
+  list.appendChild(summary);
+}
+
+function updateYearProgress(i, val) {
+  const goals = loadGoals().yearGoals;
+  goals[i].progress = parseInt(val);
+  saveYearGoals(goals);
+  renderYearGoals();
+}
+
+function deleteYearGoal(i) {
+  const goals = loadGoals().yearGoals;
+  goals.splice(i, 1);
+  saveYearGoals(goals);
+  renderYearGoals();
+}
+
+function addYearGoal() {
+  const title = prompt('Новая годовая цель:');
+  if (!title) return;
+  const sphere = prompt('Сфера (эмодзи): 💼 ❤️ 🏠 🧠 ✈️ 💪') || '🎯';
+  const goals = loadGoals().yearGoals;
+  goals.push({id:'y'+Date.now(), sphere, title, progress:0});
+  saveYearGoals(goals);
+  renderYearGoals();
+}
+
+// ── MONTH GOALS ────────────────────────────────────
+const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+
+function renderMonthGoals() {
+  const d = new Date();
+  const lbl = document.getElementById('month-label');
+  if (lbl) lbl.textContent = `ЦЕЛИ НА ${monthNames[d.getMonth()].toUpperCase()} ${d.getFullYear()}`;
+
+  const goals = loadGoals().monthGoals;
+  const list = document.getElementById('month-goals-list');
+  list.innerHTML = '';
+
+  if (goals.length === 0) {
+    // Default month tasks based on стратсессия
+    const defaults = [
+      {id:'m1', done:false, text:'Записаться к стоматологу'},
+      {id:'m2', done:false, text:'Провести 4 качественных вечера с сыном'},
+      {id:'m3', done:false, text:'Не курить весь месяц'},
+      {id:'m4', done:false, text:'Определить нишу/направление в бизнесе'},
+      {id:'m5', done:false, text:'Тренироваться минимум 10 раз'},
+      {id:'m6', done:false, text:'Отложить деньги на квартиру'},
+    ];
+    defaults.forEach(g => goals.push(g));
+    saveMonthGoals(goals);
+  }
+
+  goals.forEach((g, i) => {
+    const row = document.createElement('div');
+    row.className = 'card';
+    row.style.cssText = `margin-bottom:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;${g.done?'opacity:0.5':''}`;
+    row.innerHTML = `
+      <button class="check-btn ${g.done?'done':''}" onclick="toggleMonthGoal(${i})" style="flex-shrink:0">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <div style="flex:1;font-size:14px;color:var(--text);${g.done?'text-decoration:line-through':''}">${g.text}</div>
+      <button onclick="deleteMonthGoal(${i})" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer">×</button>`;
+    list.appendChild(row);
+  });
+
+  const done = goals.filter(g=>g.done).length;
+  const pct = goals.length ? Math.round(done/goals.length*100) : 0;
+  const summary = document.createElement('div');
+  summary.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;color:var(--text2)';
+  summary.innerHTML = `<span>Выполнено: ${done}/${goals.length}</span><span style="color:var(--${pct>=80?'green':pct>=50?'amber':'coral'});font-weight:600">${pct}%</span>`;
+  list.appendChild(summary);
+}
+
+function toggleMonthGoal(i) {
+  const goals = loadGoals().monthGoals;
+  goals[i].done = !goals[i].done;
+  saveMonthGoals(goals);
+  renderMonthGoals();
+}
+
+function deleteMonthGoal(i) {
+  const goals = loadGoals().monthGoals;
+  goals.splice(i, 1);
+  saveMonthGoals(goals);
+  renderMonthGoals();
+}
+
+function addMonthGoal() {
+  const text = prompt('Новая задача на месяц:');
+  if (!text) return;
+  const goals = loadGoals().monthGoals;
+  goals.push({id:'m'+Date.now(), done:false, text});
+  saveMonthGoals(goals);
+  renderMonthGoals();
+}
+
+// ── DAILY TASKS ────────────────────────────────────
+function renderDailyTasks() {
+  const d = new Date();
+  const days2 = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  const lbl = document.getElementById('daily-date-label');
+  if (lbl) lbl.textContent = `${days2[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]}`;
+
+  const tasks = loadGoals().dailyTasks;
+  const list = document.getElementById('daily-goals-list');
+  list.innerHTML = '';
+
+  if (tasks.length === 0) {
+    const defaults = [
+      {id:'d1', done:false, text:'🏃 Тренировка / баскетбол'},
+      {id:'d2', done:false, text:'📖 30 мин на развитие (книга/курс)'},
+      {id:'d3', done:false, text:'🚬 Не курил сегодня'},
+      {id:'d4', done:false, text:'💊 Витамины и вода 2л'},
+      {id:'d5', done:false, text:'📞 Позвонил / написал сыну'},
+    ];
+    defaults.forEach(t => tasks.push(t));
+    saveDailyTasks(tasks);
+  }
+
+  tasks.forEach((t, i) => {
+    const row = document.createElement('div');
+    row.className = 'card';
+    row.style.cssText = `margin-bottom:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;${t.done?'opacity:0.5':''}`;
+    row.innerHTML = `
+      <button class="check-btn ${t.done?'done':''}" onclick="toggleDailyTask(${i})" style="flex-shrink:0">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <div style="flex:1;font-size:14px;color:var(--text);${t.done?'text-decoration:line-through':''}">${t.text}</div>
+      <button onclick="deleteDailyTask(${i})" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer">×</button>`;
+    list.appendChild(row);
+  });
+
+  updateDailyProgress(tasks);
+}
+
+function updateDailyProgress(tasks) {
+  const done = tasks.filter(t=>t.done).length;
+  const pct = tasks.length ? Math.round(done/tasks.length*100) : 0;
+  const bar = document.getElementById('daily-prog-bar');
+  const val = document.getElementById('daily-prog-val');
+  if (bar) bar.style.width = pct + '%';
+  if (val) val.textContent = pct + '%';
+}
+
+function toggleDailyTask(i) {
+  const tasks = loadGoals().dailyTasks;
+  tasks[i].done = !tasks[i].done;
+  saveDailyTasks(tasks);
+  renderDailyTasks();
+}
+
+function deleteDailyTask(i) {
+  const tasks = loadGoals().dailyTasks;
+  tasks.splice(i, 1);
+  saveDailyTasks(tasks);
+  renderDailyTasks();
+}
+
+function addDailyTask() {
+  const text = prompt('Новая задача на сегодня:');
+  if (!text) return;
+  const tasks = loadGoals().dailyTasks;
+  tasks.push({id:'d'+Date.now(), done:false, text});
+  saveDailyTasks(tasks);
+  renderDailyTasks();
+}
+
+// ── FINANCE SYSTEM ────────────────────────────────
+function loadFin() {
+  return {
+    accounts: JSON.parse(localStorage.getItem('fin_accounts') || JSON.stringify([
+      {id:'a1', icon:'💳', name:'Карта Сбер', balance:0},
+      {id:'a2', icon:'💳', name:'Карта Тинькофф', balance:0},
+      {id:'a3', icon:'💵', name:'Наличные', balance:0},
+    ])),
+    incomeSources: JSON.parse(localStorage.getItem('fin_income_sources') || JSON.stringify([
+      {id:'s1', icon:'💼', name:'Основной бизнес', planned:0},
+      {id:'s2', icon:'🤝', name:'Доп. проекты', planned:0},
+      {id:'s3', icon:'📦', name:'Пассивный доход', planned:0},
+    ])),
+    incomeEntries: JSON.parse(localStorage.getItem('fin_income_entries') || '[]'),
+    expenseCategories: JSON.parse(localStorage.getItem('fin_expense_cats') || JSON.stringify([
+      {id:'c1', icon:'🍔', name:'Еда и кафе'},
+      {id:'c2', icon:'🚗', name:'Транспорт'},
+      {id:'c3', icon:'🏠', name:'Жильё'},
+      {id:'c4', icon:'💊', name:'Здоровье'},
+      {id:'c5', icon:'🎉', name:'Развлечения'},
+      {id:'c6', icon:'👕', name:'Одежда'},
+      {id:'c7', icon:'📚', name:'Обучение'},
+      {id:'c8', icon:'🏦', name:'Накопления'},
+      {id:'c9', icon:'❤️', name:'Семья'},
+    ])),
+    expenseEntries: JSON.parse(localStorage.getItem('fin_expense_entries') || '[]'),
+    debts: JSON.parse(localStorage.getItem('fin_debts') || '[]'),
+    period: localStorage.getItem('fin_period') || 'month',
+  };
+}
+
+function saveFin(key, data) { localStorage.setItem(key, JSON.stringify(data)); }
+
+let finPeriod = localStorage.getItem('fin_period') || 'month';
+
+function setFinPeriod(p, btn) {
+  finPeriod = p;
+  localStorage.setItem('fin_period', p);
+  document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active-period'));
+  btn.classList.add('active-period');
+  renderFinOverview();
+}
+
+function getDateRange() {
+  const now = new Date();
+  let from;
+  if (finPeriod === 'month') { from = new Date(now.getFullYear(), now.getMonth(), 1); }
+  else if (finPeriod === 'quarter') { from = new Date(now.getFullYear(), Math.floor(now.getMonth()/3)*3, 1); }
+  else if (finPeriod === 'year') { from = new Date(now.getFullYear(), 0, 1); }
+  else { from = new Date(2020, 0, 1); }
+  return { from, to: now };
+}
+
+function filterByPeriod(entries) {
+  const { from, to } = getDateRange();
+  return entries.filter(e => { const d = new Date(e.date); return d >= from && d <= to; });
+}
+
+function fmtMoney(n) {
+  if (Math.abs(n) >= 1000000) return (n/1000000).toFixed(1) + 'М₽';
+  if (Math.abs(n) >= 1000) return (n/1000).toFixed(0) + 'К₽';
+  return n + '₽';
+}
+
+// ── OVERVIEW ──────────────────────────────────────
+function renderFinOverview() {
+  const fin = loadFin();
+  const totalAssets = fin.accounts.reduce((s,a) => s + (a.balance||0), 0);
+  const filtered = filterByPeriod(fin.incomeEntries);
+  const filteredExp = filterByPeriod(fin.expenseEntries);
+  const totalIncome = filtered.reduce((s,e) => s + (e.amount||0), 0);
+  const totalExpenses = filteredExp.reduce((s,e) => s + (e.amount||0), 0);
+  const balance = totalIncome - totalExpenses;
+  const expPct = totalIncome > 0 ? Math.min(100, Math.round(totalExpenses/totalIncome*100)) : 0;
+  const totalDebts = fin.debts.filter(d=>!d.returned).reduce((s,d) => s+(d.amount||0), 0);
+
+  document.getElementById('fin-total-assets').textContent = fmtMoney(totalAssets);
+  document.getElementById('fin-total-income').textContent = fmtMoney(totalIncome);
+  document.getElementById('fin-total-expenses').textContent = fmtMoney(totalExpenses);
+  document.getElementById('fin-balance').textContent = fmtMoney(balance);
+  document.getElementById('fin-balance').style.color = balance >= 0 ? 'var(--green)' : 'var(--coral)';
+  document.getElementById('fin-expense-bar').style.width = expPct + '%';
+  document.getElementById('fin-expense-pct').textContent = expPct + '%';
+  document.getElementById('fin-debts-total').textContent = fmtMoney(totalDebts);
+
+  const dsum = document.getElementById('fin-debts-summary');
+  const activeDebts = fin.debts.filter(d => !d.returned);
+  dsum.innerHTML = activeDebts.length === 0
+    ? '<div style="font-size:13px;color:var(--text3);padding:4px 0">Нет активных долгов</div>'
+    : activeDebts.slice(0,3).map(d => `<div class="fin-entry-row"><div class="fin-entry-left"><div class="fin-entry-name">${d.person}</div><div class="fin-entry-meta">${d.date}</div></div><div class="fin-entry-amount" style="color:var(--amber)">${fmtMoney(d.amount)}</div></div>`).join('');
+}
+
+// ── ACCOUNTS ──────────────────────────────────────
+function renderAccounts() {
+  const fin = loadFin();
+  const list = document.getElementById('accounts-list');
+  list.innerHTML = '';
+  fin.accounts.forEach((a, i) => {
+    const card = document.createElement('div');
+    card.className = 'fin-account-card';
+    card.innerHTML = `
+      <div class="fin-account-icon">${a.icon}</div>
+      <div class="fin-account-info">
+        <div class="fin-account-name">${a.name}</div>
+        <div class="fin-account-balance">${fmtMoney(a.balance)}</div>
+      </div>
+      <div class="fin-account-actions">
+        <button class="fin-action-btn" onclick="editAccountBalance(${i})">✏️</button>
+        <button class="fin-action-btn" onclick="deleteAccount(${i})" style="color:var(--coral)">×</button>
+      </div>`;
+    list.appendChild(card);
+  });
+  const total = fin.accounts.reduce((s,a) => s+(a.balance||0), 0);
+  const summary = document.createElement('div');
+  summary.style.cssText = 'display:flex;justify-content:space-between;padding:12px 4px;font-size:13px;color:var(--text2)';
+  summary.innerHTML = `<span>Итого активов</span><span style="font-size:16px;font-weight:700;color:var(--green)">${fmtMoney(total)}</span>`;
+  list.appendChild(summary);
+}
+
+function addAccount() {
+  const icon = prompt('Иконка (эмодзи):', '💳') || '💳';
+  const name = prompt('Название счёта:');
+  if (!name) return;
+  const balance = parseInt(prompt('Текущий остаток (₽):', '0') || '0');
+  const fin = loadFin();
+  fin.accounts.push({id:'a'+Date.now(), icon, name, balance});
+  saveFin('fin_accounts', fin.accounts);
+  renderAccounts();
+  renderFinOverview();
+  showToast('✅ Счёт добавлен');
+}
+
+function editAccountBalance(i) {
+  const fin = loadFin();
+  const newBalance = parseInt(prompt(`Новый остаток для "${fin.accounts[i].name}" (₽):`, fin.accounts[i].balance));
+  if (isNaN(newBalance)) return;
+  fin.accounts[i].balance = newBalance;
+  saveFin('fin_accounts', fin.accounts);
+  renderAccounts();
+  renderFinOverview();
+  showToast('✅ Баланс обновлён');
+}
+
+function deleteAccount(i) {
+  if (!confirm('Удалить счёт?')) return;
+  const fin = loadFin();
+  fin.accounts.splice(i, 1);
+  saveFin('fin_accounts', fin.accounts);
+  renderAccounts();
+}
+
+// ── INCOME ────────────────────────────────────────
+function renderIncome() {
+  const fin = loadFin();
+  const filtered = filterByPeriod(fin.incomeEntries);
+  const total = filtered.reduce((s,e) => s+(e.amount||0), 0);
+  document.getElementById('income-total-display').textContent = fmtMoney(total);
+
+  // Sources
+  const srcList = document.getElementById('income-sources-list');
+  srcList.innerHTML = '';
+  fin.incomeSources.forEach((src, i) => {
+    const actual = filtered.filter(e => e.sourceId === src.id).reduce((s,e) => s+(e.amount||0), 0);
+    const pct = src.planned > 0 ? Math.min(100, Math.round(actual/src.planned*100)) : 0;
+    const card = document.createElement('div');
+    card.className = 'fin-source-card';
+    card.innerHTML = `
+      <div class="fin-source-header">
+        <span style="font-size:20px">${src.icon}</span>
+        <div class="fin-source-name">${src.name}</div>
+        <button onclick="deleteIncomeSource(${i})" style="background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer">×</button>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <div><div style="font-size:11px;color:var(--text3)">ПЛАН</div><div style="font-size:15px;font-weight:600;color:var(--text2)">${fmtMoney(src.planned)}</div></div>
+        <div style="text-align:right"><div style="font-size:11px;color:var(--text3)">ФАКТ</div><div style="font-size:15px;font-weight:700;color:var(--green)">${fmtMoney(actual)}</div></div>
+      </div>
+      <div style="height:6px;background:var(--bg4);border-radius:3px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:var(--green);border-radius:3px"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px">
+        <button onclick="editIncomePlan(${i})" style="background:none;border:none;color:var(--blue);font-size:12px;cursor:pointer">✏️ Изменить план</button>
+        <span style="font-size:12px;color:var(--text3)">${pct}% выполнено</span>
+      </div>`;
+    srcList.appendChild(card);
+  });
+
+  // History
+  const hist = document.getElementById('income-history');
+  const sorted = [...filtered].sort((a,b) => new Date(b.date)-new Date(a.date));
+  hist.innerHTML = sorted.length === 0
+    ? '<div style="font-size:13px;color:var(--text3);padding:8px 0">Нет записей за период</div>'
+    : sorted.slice(0,20).map((e,i) => {
+        const src = fin.incomeSources.find(s=>s.id===e.sourceId);
+        return `<div class="fin-entry-row">
+          <div class="fin-entry-left">
+            <div class="fin-entry-name">${src?src.icon+' '+src.name:'Доход'}</div>
+            <div class="fin-entry-meta">${e.date}${e.note?' · '+e.note:''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="fin-entry-amount" style="color:var(--green)">+${fmtMoney(e.amount)}</div>
+            <button onclick="deleteIncomeEntry(${fin.incomeEntries.indexOf(e)})" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer">×</button>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+function addIncomeSource() {
+  const icon = prompt('Иконка:', '💰') || '💰';
+  const name = prompt('Название источника:');
+  if (!name) return;
+  const planned = parseInt(prompt('Плановая сумма в месяц (₽):', '0') || '0');
+  const fin = loadFin();
+  fin.incomeSources.push({id:'s'+Date.now(), icon, name, planned});
+  saveFin('fin_income_sources', fin.incomeSources);
+  renderIncome();
+  showToast('✅ Источник добавлен');
+}
+
+function editIncomePlan(i) {
+  const fin = loadFin();
+  const val = parseInt(prompt(`План для "${fin.incomeSources[i].name}" (₽):`, fin.incomeSources[i].planned));
+  if (isNaN(val)) return;
+  fin.incomeSources[i].planned = val;
+  saveFin('fin_income_sources', fin.incomeSources);
+  renderIncome();
+}
+
+function deleteIncomeSource(i) {
+  if (!confirm('Удалить источник?')) return;
+  const fin = loadFin();
+  fin.incomeSources.splice(i,1);
+  saveFin('fin_income_sources', fin.incomeSources);
+  renderIncome();
+}
+
+function addIncomeEntry() {
+  const fin = loadFin();
+  const srcNames = fin.incomeSources.map((s,i) => `${i+1}. ${s.icon} ${s.name}`).join('\n');
+  const srcIdx = parseInt(prompt(`Источник:\n${srcNames}\n\nВведи номер:`)) - 1;
+  if (isNaN(srcIdx) || srcIdx < 0 || srcIdx >= fin.incomeSources.length) return;
+  const amount = parseInt(prompt('Сумма (₽):'));
+  if (isNaN(amount) || amount <= 0) return;
+  const note = prompt('Заметка (необязательно):') || '';
+  const date = prompt('Дата (ГГГГ-ММ-ДД):', todayDate) || todayDate;
+  fin.incomeEntries.push({id:'ie'+Date.now(), sourceId:fin.incomeSources[srcIdx].id, amount, note, date});
+  saveFin('fin_income_entries', fin.incomeEntries);
+  renderIncome(); renderFinOverview();
+  showToast(`✅ +${fmtMoney(amount)} записано`);
+}
+
+function deleteIncomeEntry(i) {
+  const fin = loadFin();
+  fin.incomeEntries.splice(i,1);
+  saveFin('fin_income_entries', fin.incomeEntries);
+  renderIncome(); renderFinOverview();
+}
+
+// ── EXPENSES ──────────────────────────────────────
+function renderExpenses() {
+  const fin = loadFin();
+  const filtered = filterByPeriod(fin.expenseEntries);
+  const total = filtered.reduce((s,e) => s+(e.amount||0), 0);
+  document.getElementById('expenses-total-display').textContent = fmtMoney(total);
+
+  const catList = document.getElementById('expense-categories-list');
+  catList.innerHTML = '';
+  fin.expenseCategories.forEach((cat, i) => {
+    const spent = filtered.filter(e=>e.catId===cat.id).reduce((s,e)=>s+(e.amount||0),0);
+    if (spent === 0 && fin.expenseCategories.length > 3) return; // hide empty cats
+    const pct = total > 0 ? Math.round(spent/total*100) : 0;
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.marginBottom = '8px';
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <span style="font-size:20px">${cat.icon}</span>
+        <div style="flex:1;font-size:14px;font-weight:500;color:var(--text)">${cat.name}</div>
+        <div style="font-size:16px;font-weight:700;color:var(--coral)">${fmtMoney(spent)}</div>
+        <button onclick="deleteExpenseCat(${i})" style="background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer">×</button>
+      </div>
+      <div style="height:5px;background:var(--bg4);border-radius:3px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:var(--coral);border-radius:3px"></div>
+      </div>
+      <div style="font-size:11px;color:var(--text3);margin-top:4px">${pct}% от всех расходов</div>`;
+    catList.appendChild(card);
+  });
+
+  const hist = document.getElementById('expenses-history');
+  const sorted = [...filtered].sort((a,b) => new Date(b.date)-new Date(a.date));
+  hist.innerHTML = sorted.length === 0
+    ? '<div style="font-size:13px;color:var(--text3);padding:8px 0">Нет расходов за период</div>'
+    : sorted.slice(0,20).map((e) => {
+        const cat = fin.expenseCategories.find(c=>c.id===e.catId);
+        return `<div class="fin-entry-row">
+          <div class="fin-entry-left">
+            <div class="fin-entry-name">${cat?cat.icon+' '+cat.name:'Расход'}</div>
+            <div class="fin-entry-meta">${e.date}${e.note?' · '+e.note:''}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <div class="fin-entry-amount" style="color:var(--coral)">-${fmtMoney(e.amount)}</div>
+            <button onclick="deleteExpenseEntry('${e.id}')" style="background:none;border:none;color:var(--text3);font-size:14px;cursor:pointer">×</button>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+function addExpenseCategory() {
+  const icon = prompt('Иконка:', '💸') || '💸';
+  const name = prompt('Название категории:');
+  if (!name) return;
+  const fin = loadFin();
+  fin.expenseCategories.push({id:'c'+Date.now(), icon, name});
+  saveFin('fin_expense_cats', fin.expenseCategories);
+  renderExpenses();
+  showToast('✅ Категория добавлена');
+}
+
+function deleteExpenseCat(i) {
+  if (!confirm('Удалить категорию?')) return;
+  const fin = loadFin();
+  fin.expenseCategories.splice(i,1);
+  saveFin('fin_expense_cats', fin.expenseCategories);
+  renderExpenses();
+}
+
+function addExpenseEntry() {
+  const fin = loadFin();
+  const catNames = fin.expenseCategories.map((c,i) => `${i+1}. ${c.icon} ${c.name}`).join('\n');
+  const catIdx = parseInt(prompt(`Категория:\n${catNames}\n\nВведи номер:`)) - 1;
+  if (isNaN(catIdx) || catIdx < 0 || catIdx >= fin.expenseCategories.length) return;
+  const amount = parseInt(prompt('Сумма (₽):'));
+  if (isNaN(amount) || amount <= 0) return;
+  const note = prompt('Заметка (необязательно):') || '';
+  const date = prompt('Дата (ГГГГ-ММ-ДД):', todayDate) || todayDate;
+  fin.expenseEntries.push({id:'ee'+Date.now(), catId:fin.expenseCategories[catIdx].id, amount, note, date});
+  saveFin('fin_expense_entries', fin.expenseEntries);
+  renderExpenses(); renderFinOverview();
+  showToast(`✅ -${fmtMoney(amount)} записано`);
+}
+
+function deleteExpenseEntry(id) {
+  const fin = loadFin();
+  const idx = fin.expenseEntries.findIndex(e=>e.id===id);
+  if (idx>=0) fin.expenseEntries.splice(idx,1);
+  saveFin('fin_expense_entries', fin.expenseEntries);
+  renderExpenses(); renderFinOverview();
+}
+
+// ── DEBTS ─────────────────────────────────────────
+function renderDebts() {
+  const fin = loadFin();
+  const list = document.getElementById('debts-list');
+  list.innerHTML = '';
+
+  if (fin.debts.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:12px 0">Нет выданных долгов</div>';
+    return;
+  }
+
+  fin.debts.forEach((d, i) => {
+    const card = document.createElement('div');
+    card.className = 'debt-card';
+    card.innerHTML = `
+      <div class="debt-header">
+        <div>
+          <div class="debt-person">👤 ${d.person}</div>
+          <div class="debt-amount">${fmtMoney(d.amount)}</div>
+        </div>
+        <button onclick="deleteDebt(${i})" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer">×</button>
+      </div>
+      <div class="debt-meta">Выдан: ${d.date}${d.note?' · '+d.note:''}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span class="debt-status ${d.returned?'returned':'active'}">${d.returned?'✅ Возвращён':'⏳ Ожидается'}</span>
+        ${!d.returned ? `<button onclick="markDebtReturned(${i})" style="background:none;border:0.5px solid var(--green);border-radius:8px;padding:6px 12px;color:var(--green);font-size:12px;cursor:pointer">Отметить возврат</button>` : ''}
+      </div>`;
+    list.appendChild(card);
+  });
+
+  const total = fin.debts.filter(d=>!d.returned).reduce((s,d)=>s+(d.amount||0),0);
+  if (total > 0) {
+    const summary = document.createElement('div');
+    summary.style.cssText = 'display:flex;justify-content:space-between;padding:12px 4px;font-size:13px;color:var(--text2)';
+    summary.innerHTML = `<span>Итого ожидается</span><span style="font-size:16px;font-weight:700;color:var(--amber)">${fmtMoney(total)}</span>`;
+    list.appendChild(summary);
+  }
+}
+
+function addDebt() {
+  const person = prompt('Кому дал в долг?');
+  if (!person) return;
+  const amount = parseInt(prompt('Сумма (₽):'));
+  if (isNaN(amount) || amount <= 0) return;
+  const note = prompt('Заметка (необязательно):') || '';
+  const date = prompt('Дата выдачи:', todayDate) || todayDate;
+  const fin = loadFin();
+  fin.debts.push({id:'debt'+Date.now(), person, amount, note, date, returned:false});
+  saveFin('fin_debts', fin.debts);
+  // Also record as expense
+  const debtCat = fin.expenseCategories.find(c=>c.name==='Долги выданные') || {id:'debt-cat'};
+  fin.expenseEntries.push({id:'ee'+Date.now(), catId:'debt-cat', amount, note:'Долг: '+person, date});
+  saveFin('fin_expense_entries', fin.expenseEntries);
+  renderDebts(); renderFinOverview();
+  showToast('✅ Долг записан');
+}
+
+function markDebtReturned(i) {
+  const fin = loadFin();
+  fin.debts[i].returned = true;
+  saveFin('fin_debts', fin.debts);
+  renderDebts(); renderFinOverview();
+  showToast('✅ Возврат отмечен!');
+}
+
+function deleteDebt(i) {
+  if (!confirm('Удалить запись о долге?')) return;
+  const fin = loadFin();
+  fin.debts.splice(i,1);
+  saveFin('fin_debts', fin.debts);
+  renderDebts();
+}
+
+// ── FIN TAB SWITCHING ─────────────────────────────
+function showFinTab(tab, btn) {
+  document.querySelectorAll('#page-finance .tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['overview','accounts','income','expenses','debts'].forEach(t => {
+    const el = document.getElementById('fin-'+t);
+    if (el) el.style.display = t===tab ? 'block' : 'none';
+  });
+  if (tab==='overview') renderFinOverview();
+  if (tab==='accounts') renderAccounts();
+  if (tab==='income') renderIncome();
+  if (tab==='expenses') renderExpenses();
+  if (tab==='debts') renderDebts();
+}
+
+// ── SLEEP SYSTEM ──────────────────────────────────
+function loadSleepData() {
+  return JSON.parse(localStorage.getItem('sleep_data') || '{}');
+}
+function saveSleepData(data) { localStorage.setItem('sleep_data', JSON.stringify(data)); }
+
+function calcHours(sleepTime, wakeTime) {
+  const [sh, sm] = sleepTime.split(':').map(Number);
+  const [wh, wm] = wakeTime.split(':').map(Number);
+  let mins = (wh * 60 + wm) - (sh * 60 + sm);
+  if (mins < 0) mins += 24 * 60;
+  return Math.round(mins / 6) / 10; // 1 decimal
+}
+
+function sleepQualityLabel(hours, quality) {
+  if (hours >= 7.5 && quality >= 8) return { text: '🌟 Отличный', color: 'var(--green)', bg: 'var(--green-bg)' };
+  if (hours >= 6.5 && quality >= 6) return { text: '✅ Хороший', color: 'var(--blue)', bg: 'var(--blue-bg)' };
+  if (hours >= 5 && quality >= 4)   return { text: '⚠️ Средний', color: 'var(--amber)', bg: 'var(--amber-bg)' };
+  return { text: '❌ Плохой', color: 'var(--coral)', bg: 'var(--coral-bg)' };
+}
+
+function updateSleepPreview() {
+  const sleepTime = document.getElementById('sleep-time').value;
+  const wakeTime  = document.getElementById('wake-time').value;
+  const quality   = document.getElementById('sleep-quality').value;
+  const hours     = calcHours(sleepTime, wakeTime);
+  const lbl       = sleepQualityLabel(hours, parseInt(quality));
+
+  document.getElementById('sleep-hours-display').textContent = hours.toFixed(1);
+  document.getElementById('sleep-hours-display').style.color =
+    hours >= 7.5 ? 'var(--green)' : hours >= 6 ? 'var(--amber)' : 'var(--coral)';
+  document.getElementById('sleep-quality-val').textContent = quality;
+
+  const badge = document.getElementById('sleep-quality-badge');
+  badge.textContent = lbl.text;
+  badge.style.color = lbl.color;
+  badge.style.background = lbl.bg;
+}
+
+function saveSleepEntry() {
+  const sleepTime = document.getElementById('sleep-time').value;
+  const wakeTime  = document.getElementById('wake-time').value;
+  const quality   = parseInt(document.getElementById('sleep-quality').value);
+  const hours     = calcHours(sleepTime, wakeTime);
+  const data      = loadSleepData();
+  data[todayDate] = { sleepTime, wakeTime, hours, quality, date: todayDate };
+  saveSleepData(data);
+  renderSleepPage();
+  showToast(`✅ Сон ${hours}ч сохранён`);
+}
+
+function renderSleepPage() {
+  const data    = loadSleepData();
+  const entries = Object.values(data).sort((a, b) => b.date.localeCompare(a.date));
+  const last7   = entries.slice(0, 7);
+
+  // Load today's data if exists
+  const today = data[todayDate];
+  if (today) {
+    document.getElementById('sleep-time').value    = today.sleepTime;
+    document.getElementById('wake-time').value     = today.wakeTime;
+    document.getElementById('sleep-quality').value = today.quality;
+  }
+  updateSleepPreview();
+
+  // Weekly stats
+  if (last7.length > 0) {
+    const avgH = (last7.reduce((s, e) => s + e.hours, 0) / last7.length).toFixed(1);
+    const best = Math.max(...last7.map(e => e.hours)).toFixed(1);
+    const avgQ = (last7.reduce((s, e) => s + e.quality, 0) / last7.length).toFixed(1);
+    document.getElementById('sleep-avg').textContent  = avgH;
+    document.getElementById('sleep-best').textContent = best;
+    document.getElementById('sleep-qual-avg').textContent = avgQ;
+
+    // Bar chart — last 7 days
+    const chart  = document.getElementById('sleep-chart');
+    const labels = document.getElementById('sleep-chart-labels');
+    const maxH   = Math.max(...last7.map(e => e.hours), 9);
+    const days7  = [...last7].reverse();
+    const dayAbbr = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+
+    chart.innerHTML = days7.map(e => {
+      const pct = Math.round(e.hours / maxH * 100);
+      const col  = e.hours >= 7.5 ? 'var(--green)' : e.hours >= 6 ? 'var(--amber)' : 'var(--coral)';
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px">
+        <div style="font-size:10px;color:var(--text2)">${e.hours}</div>
+        <div style="width:100%;background:${col};border-radius:4px 4px 0 0;height:${pct}%;min-height:4px;transition:height 0.4s"></div>
+      </div>`;
+    }).join('');
+
+    labels.innerHTML = days7.map(e => {
+      const d = new Date(e.date + 'T12:00:00');
+      return `<div style="flex:1;font-size:10px;color:var(--text3);text-align:center">${dayAbbr[d.getDay()]}</div>`;
+    }).join('');
+  }
+
+  // History list
+  const hist = document.getElementById('sleep-history');
+  if (entries.length === 0) {
+    hist.innerHTML = '<div style="font-size:13px;color:var(--text3);padding:8px 0">Нет записей. Добавь первую выше.</div>';
+    return;
+  }
+  hist.innerHTML = entries.slice(0, 14).map(e => {
+    const lbl = sleepQualityLabel(e.hours, e.quality);
+    const d   = new Date(e.date + 'T12:00:00');
+    const dayAbbr = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+    return `<div class="fin-entry-row">
+      <div class="fin-entry-left">
+        <div class="fin-entry-name">${dayAbbr[d.getDay()]}, ${e.date.slice(8)}.${e.date.slice(5,7)}</div>
+        <div class="fin-entry-meta">🌙 ${e.sleepTime} → ☀️ ${e.wakeTime} · качество ${e.quality}/10</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        <div style="font-size:16px;font-weight:700;color:${e.hours>=7.5?'var(--green)':e.hours>=6?'var(--amber)':'var(--coral)'}">${e.hours}ч</div>
+        <div style="font-size:10px;font-weight:600;color:${lbl.color}">${lbl.text}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Attach live update listeners
+document.getElementById('sleep-time').addEventListener('input', updateSleepPreview);
+document.getElementById('wake-time').addEventListener('input', updateSleepPreview);
+
+// ── HABITS SYSTEM ─────────────────────────────────
+const DEFAULT_HABITS = [
+  {id:'h1',  icon:'🚬', name:'Не курил',               active:true},
+  {id:'h2',  icon:'💪', name:'Тренировка / баскетбол',  active:true},
+  {id:'h3',  icon:'📖', name:'Чтение / обучение 30 мин',active:true},
+  {id:'h4',  icon:'💧', name:'Вода 2л',                 active:true},
+  {id:'h5',  icon:'🧘', name:'Медитация / тишина',      active:true},
+  {id:'h6',  icon:'📞', name:'Время с сыном',           active:true},
+  {id:'h7',  icon:'❤️', name:'Время с Катей',           active:true},
+  {id:'h8',  icon:'🌅', name:'Ранний подъём до 8:00',   active:true},
+  {id:'h9',  icon:'📵', name:'Без телефона до 10 утра', active:true},
+  {id:'h10', icon:'💊', name:'Витамины',                active:true},
+];
+
+function loadHabits() {
+  return JSON.parse(localStorage.getItem('habits_list') || JSON.stringify(DEFAULT_HABITS));
+}
+function saveHabits(h) { localStorage.setItem('habits_list', JSON.stringify(h)); }
+
+function loadHabitLog() {
+  return JSON.parse(localStorage.getItem('habits_log') || '{}');
+}
+function saveHabitLog(l) { localStorage.setItem('habits_log', JSON.stringify(l)); }
+
+function toggleHabitDone(id) {
+  const log = loadHabitLog();
+  if (!log[todayDate]) log[todayDate] = {};
+  log[todayDate][id] = !log[todayDate][id];
+  saveHabitLog(log);
+  renderHabits();
+}
+
+function addHabit() {
+  const icon = prompt('Иконка (эмодзи):', '⭐') || '⭐';
+  const name = prompt('Название привычки:');
+  if (!name) return;
+  const habits = loadHabits();
+  habits.push({id:'h'+Date.now(), icon, name, active:true});
+  saveHabits(habits);
+  renderHabits();
+  showToast('✅ Привычка добавлена');
+}
+
+function deleteHabit(id) {
+  if (!confirm('Удалить привычку?')) return;
+  const habits = loadHabits().filter(h => h.id !== id);
+  saveHabits(habits);
+  renderHabits();
+}
+
+function toggleHabitActive(id) {
+  const habits = loadHabits();
+  const h = habits.find(h => h.id === id);
+  if (h) h.active = !h.active;
+  saveHabits(habits);
+  renderHabits();
+}
+
+function getStreakCount(id) {
+  const log = loadHabitLog();
+  let streak = 0;
+  const d = new Date();
+  while (true) {
+    const key = d.toISOString().slice(0,10);
+    if (log[key] && log[key][id]) { streak++; d.setDate(d.getDate()-1); }
+    else break;
+  }
+  return streak;
+}
+
+function renderHabits() {
+  const habits = loadHabits();
+  const log    = loadHabitLog();
+  const today  = log[todayDate] || {};
+  const active = habits.filter(h => h.active);
+  const done   = active.filter(h => today[h.id]).length;
+  const pct    = active.length ? Math.round(done / active.length * 100) : 0;
+
+  // Header
+  const d = new Date();
+  const dayNames = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  const monthN   = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  const lbl = document.getElementById('habits-date-label');
+  if (lbl) lbl.textContent = `${dayNames[d.getDay()]}, ${d.getDate()} ${monthN[d.getMonth()]}`;
+  document.getElementById('habits-score').textContent = `${done}/${active.length}`;
+  document.getElementById('habits-progress-bar').style.width = pct + '%';
+
+  // Checklist
+  const list = document.getElementById('habits-list');
+  list.innerHTML = habits.map(h => {
+    const isDone    = !!today[h.id];
+    const streak    = getStreakCount(h.id);
+    const streakBadge = streak > 1 ? `<span style="font-size:11px;color:var(--amber);font-weight:600;background:var(--amber-bg);padding:2px 8px;border-radius:10px">🔥${streak}д</span>` : '';
+    return `<div style="display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px;${isDone?'opacity:0.6':''}">
+      <button class="check-btn ${isDone?'done':''}" onclick="toggleHabitDone('${h.id}')">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </button>
+      <span style="font-size:22px">${h.icon}</span>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:500;color:var(--text);${isDone?'text-decoration:line-through':''}">${h.name}</div>
+        <div style="margin-top:3px">${streakBadge}</div>
+      </div>
+      <div style="display:flex;gap:6px">
+        <button onclick="toggleHabitActive('${h.id}')" style="background:none;border:none;font-size:14px;cursor:pointer;color:var(--text3)" title="${h.active?'Скрыть':'Показать'}">${h.active?'👁':'👁️‍🗨️'}</button>
+        <button onclick="deleteHabit('${h.id}')" style="background:none;border:none;font-size:16px;cursor:pointer;color:var(--text3)">×</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Heatmap — last 14 days × each habit
+  const heatmap = document.getElementById('habits-heatmap');
+  const days14  = [];
+  for (let i = 13; i >= 0; i--) {
+    const dd = new Date(); dd.setDate(dd.getDate() - i);
+    days14.push(dd.toISOString().slice(0,10));
+  }
+  const dayAbbr = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
+
+  heatmap.innerHTML = active.map(h => {
+    const cells = days14.map(date => {
+      const dd   = new Date(date + 'T12:00:00');
+      const done = log[date] && log[date][h.id];
+      const isToday = date === todayDate;
+      return `<div title="${date}" style="width:18px;height:18px;border-radius:4px;background:${done?'var(--green)':'var(--bg4)'};border:${isToday?'1.5px solid var(--text2)':'1px solid transparent'};flex-shrink:0"></div>`;
+    }).join('');
+    return `<div style="display:flex;align-items:center;gap:5px">
+      <div style="font-size:16px;width:24px;text-align:center;flex-shrink:0">${h.icon}</div>
+      <div style="display:flex;gap:3px;flex:1">${cells}</div>
+      <div style="font-size:11px;color:var(--text3);min-width:28px;text-align:right">${getStreakCount(h.id)}д</div>
+    </div>`;
+  }).join('');
+
+  // Stats
+  const statsEl = document.getElementById('habits-stats');
+  const totalDays = Object.keys(loadHabitLog()).length;
+  const bestStreak = active.reduce((max, h) => Math.max(max, getStreakCount(h.id)), 0);
+  const last7days  = days14.slice(7);
+  const last7pcts  = last7days.map(date => {
+    const dayLog = log[date] || {};
+    const dayDone = active.filter(h => dayLog[h.id]).length;
+    return active.length ? Math.round(dayDone/active.length*100) : 0;
+  });
+  const avgLast7 = last7pcts.length ? Math.round(last7pcts.reduce((s,v)=>s+v,0)/last7pcts.length) : 0;
+
+  statsEl.innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px">
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--green)">${pct}%</div>
+        <div style="font-size:11px;color:var(--text2)">сегодня</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--amber)">${avgLast7}%</div>
+        <div style="font-size:11px;color:var(--text2)">ср. 7 дней</div>
+      </div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
+        <div style="font-size:22px;font-weight:700;color:var(--coral)">🔥${bestStreak}</div>
+        <div style="font-size:11px;color:var(--text2)">лучший стрик</div>
+      </div>
+    </div>`;
+}
+
+// ── BOOT ───────────────────────────────────────────
 buildExercises(exercisesA,'exercises-A','A');
 buildExercises(exercisesB,'exercises-B','B');
 buildWeekGrid('week-grid-home');
 buildWeekGrid('week-grid-workout');
 buildCalendar();
-loadSavedNutrition();
+renderMeals();
 updateMetrics();
-updateProgressBars();
 updateApiStatus();
+renderFinOverview();
+updateSleepPreview();
+renderSleepPage();
+renderHabits();
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
