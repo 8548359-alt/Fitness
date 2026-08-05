@@ -28,8 +28,9 @@ html, body { height: 100%; background: var(--bg); color: var(--text); font-famil
 .topbar-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
 .topbar-date { font-size: 13px; color: var(--text2); }
 .content { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 0 0 calc(var(--safe-bottom) + 80px); }
-.navbar { position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: var(--safe-bottom); background: rgba(10,10,10,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border); display: flex; }
-.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 0 8px; background: none; border: none; color: var(--text3); font-size: 10px; font-weight: 500; cursor: pointer; transition: color 0.15s; }
+.navbar { position: fixed; bottom: 0; left: 0; right: 0; padding-bottom: var(--safe-bottom); background: rgba(10,10,10,0.92); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 0.5px solid var(--border); display: flex; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.navbar::-webkit-scrollbar { display: none; }
+.nav-btn { flex: 0 0 auto; min-width: 64px; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 10px 8px 8px; background: none; border: none; color: var(--text3); font-size: 10px; font-weight: 500; cursor: pointer; transition: color 0.15s; }
 .nav-btn.active { color: var(--green); }
 .nav-btn svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .page { display: none; padding: 16px; }
@@ -698,6 +699,12 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
   <nav class="navbar">
     <button class="nav-btn active" onclick="showPage('home',this)">
       <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Главная
+    </button>
+    <button class="nav-btn" onclick="showPage('nutrition',this)">
+      <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 010 8h-1"/><path d="M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>Питание
+    </button>
+    <button class="nav-btn" onclick="showPage('workout',this)">
+      <svg viewBox="0 0 24 24"><path d="M6 4v6a6 6 0 0012 0V4M4 9h2m12 0h2"/></svg>Зал
     </button>
     <button class="nav-btn" onclick="showPage('goals',this)">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Цели
