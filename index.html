@@ -162,9 +162,12 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
       <div class="topbar-title">Fitness 💪</div>
       <div class="topbar-date" id="topbar-date"></div>
     </div>
-    <div class="streak-badge">
-      <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      <span id="streak-badge-val">1 нед.</span>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="streak-badge">
+        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:var(--amber);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span id="streak-badge-val">1 нед.</span>
+      </div>
+      <button onclick="showDataModal()" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:2px 4px" title="Данные">⚙️</button>
     </div>
   </div>
 
@@ -177,19 +180,7 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <span>Добавь на экран: нажми <b>Поделиться →</b> затем <b>На экран Домой</b></span>
         <button class="close-hint" onclick="dismissHint()">×</button>
       </div>
-      <div class="metrics-row">
-        <div class="metric green"><div class="metric-label">Калории</div><div class="metric-value" id="m-kcal">0</div><div class="metric-sub">цель 3050</div></div>
-        <div class="metric blue"><div class="metric-label">Белок</div><div class="metric-value" id="m-protein">0г</div><div class="metric-sub">цель 195г</div></div>
-        <div class="metric amber"><div class="metric-label">Тренировок</div><div class="metric-value" id="m-trains">0/3</div><div class="metric-sub">эта неделя</div></div>
-        <div class="metric coral"><div class="metric-label">Прогресс</div><div class="metric-value" id="m-progress">0%</div><div class="metric-sub">дня</div></div>
-      </div>
-      <div class="card">
-        <div class="card-title">Питание сегодня</div>
-        <div class="prog-row"><div class="prog-label">Калории</div><div class="prog-bar"><div class="prog-fill" id="pb-kcal" style="width:0%;background:var(--green)"></div></div><div class="prog-val" id="pv-kcal">0%</div></div>
-        <div class="prog-row"><div class="prog-label">Белок</div><div class="prog-bar"><div class="prog-fill" id="pb-protein" style="width:0%;background:var(--blue)"></div></div><div class="prog-val" id="pv-protein">0%</div></div>
-        <div class="prog-row"><div class="prog-label">Углеводы</div><div class="prog-bar"><div class="prog-fill" id="pb-carbs" style="width:0%;background:var(--amber)"></div></div><div class="prog-val" id="pv-carbs">0%</div></div>
-        <div class="prog-row" style="margin-bottom:0"><div class="prog-label">Жиры</div><div class="prog-bar"><div class="prog-fill" id="pb-fat" style="width:0%;background:var(--coral)"></div></div><div class="prog-val" id="pv-fat">0%</div></div>
-      </div>
+
       <!-- Сводка по направлениям — день -->
       <div class="card">
         <div class="card-title">Сегодня — обзор</div>
@@ -791,6 +782,32 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- DATA MODAL -->
+<div id="data-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center">
+  <div style="background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:480px;border-top:0.5px solid var(--border)">
+    <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 20px"></div>
+    <div style="font-size:17px;font-weight:600;margin-bottom:6px">⚙️ Данные приложения</div>
+    <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Экспортируй данные перед обновлением приложения, чтобы не потерять прогресс</div>
+
+    <button onclick="exportData()" style="width:100%;padding:16px;background:var(--green);border:none;border-radius:var(--radius-sm);color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px">
+      ⬇️ Экспортировать данные
+    </button>
+    <button onclick="document.getElementById('import-file').click()" style="width:100%;padding:16px;background:var(--bg3);border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;margin-bottom:10px">
+      ⬆️ Импортировать данные
+    </button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+
+    <div style="background:var(--amber-bg);border:0.5px solid rgba(239,159,39,0.3);border-radius:var(--radius-sm);padding:12px;margin-bottom:16px">
+      <div style="font-size:12px;color:var(--amber);font-weight:600;margin-bottom:4px">⚠️ Важно</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.5">После импорта страница перезагрузится. Старые данные будут заменены данными из файла.</div>
+    </div>
+
+    <button onclick="document.getElementById('data-modal').style.display='none'" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:15px;cursor:pointer">
+      Закрыть
+    </button>
+  </div>
+</div>
 
 <script>
 // ── State ──────────────────────────────────────────
@@ -2642,6 +2659,49 @@ function deleteBodyScan(id) {
   const scans = loadBodyScans().filter(s => s.id !== id);
   saveBodyScans(scans);
   renderBodyScans();
+}
+
+// ── EXPORT / IMPORT ────────────────────────────────
+function showDataModal() {
+  const m = document.getElementById('data-modal');
+  m.style.display = 'flex';
+}
+
+function exportData() {
+  const keys = [];
+  for (let i = 0; i < localStorage.length; i++) keys.push(localStorage.key(i));
+  const data = {};
+  keys.forEach(k => { try { data[k] = JSON.parse(localStorage.getItem(k)); } catch { data[k] = localStorage.getItem(k); } });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const date = new Date().toISOString().slice(0,10);
+  a.href = url; a.download = `fitness-backup-${date}.json`;
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+  showToast('✅ Данные сохранены');
+}
+
+function importData(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (!confirm(`Импортировать данные из файла "${file.name}"?\n\nТекущие данные будут заменены.`)) return;
+      localStorage.clear();
+      Object.entries(data).forEach(([k, v]) => {
+        localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v));
+      });
+      showToast('✅ Данные восстановлены!');
+      setTimeout(() => location.reload(), 1000);
+    } catch {
+      alert('Ошибка: файл повреждён или неверный формат');
+    }
+  };
+  reader.readAsText(file);
+  input.value = '';
 }
 
 // ── BOOT ───────────────────────────────────────────
