@@ -181,23 +181,72 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         <button class="close-hint" onclick="dismissHint()">×</button>
       </div>
 
-      <!-- Сводка по направлениям — день -->
+      <!-- Сегодня — обзор -->
       <div class="card">
         <div class="card-title">Сегодня — обзор</div>
         <div id="home-daily-summary" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px"></div>
       </div>
 
-      <!-- Сводка по направлениям — неделя -->
+      <!-- Календарь -->
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <button onclick="calPrevMonth()" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 6px">‹</button>
+          <div style="font-size:15px;font-weight:600" id="cal-month-label"></div>
+          <button onclick="calNextMonth()" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 6px">›</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px">
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Пн</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Вт</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Ср</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Чт</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Пт</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Сб</div>
+          <div style="text-align:center;font-size:10px;color:var(--text3)">Вс</div>
+        </div>
+        <div id="home-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
+        <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--text3)"><span style="display:inline-block;width:8px;height:8px;background:var(--green);border-radius:2px;margin-right:3px;opacity:0.85"></span>Отличный день</span>
+          <span style="font-size:10px;color:var(--text3)"><span style="display:inline-block;width:8px;height:8px;background:var(--amber);border-radius:2px;margin-right:3px;opacity:0.85"></span>Частично</span>
+          <span style="font-size:10px;color:var(--text3)"><span style="display:inline-block;width:8px;height:8px;background:var(--coral);border-radius:2px;margin-right:3px;opacity:0.85"></span>Слабо</span>
+        </div>
+      </div>
+
+      <!-- Неделя — обзор -->
       <div class="card">
         <div class="card-title">Неделя — обзор</div>
         <div id="home-weekly-summary" style="display:flex;flex-direction:column;gap:8px"></div>
       </div>
 
-      <div class="card"><div class="card-title">Неделя — тренировки</div><div class="week-grid" id="week-grid-home"></div></div>
+      <!-- Day detail modal -->
+      <div id="day-detail-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center">
+        <div style="background:var(--bg2);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:80vh;overflow-y:auto;border-top:0.5px solid var(--border)">
+          <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 16px"></div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:16px" id="day-detail-title"></div>
+          <div id="day-detail-content"></div>
+          <!-- Add task to this day -->
+          <div style="margin-top:16px;border-top:0.5px solid var(--border);padding-top:14px">
+            <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">📌 ДОБАВИТЬ ЗАДАЧУ НА ЭТОТ ДЕНЬ</div>
+            <div style="display:flex;gap:8px">
+              <input type="text" id="day-task-input" placeholder="Например: запись к стоматологу..." style="flex:1;padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none">
+              <button onclick="addDayTask()" style="padding:10px 14px;background:var(--blue);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">+</button>
+            </div>
+          </div>
+          <button onclick="document.getElementById('day-detail-modal').style.display='none'" style="width:100%;padding:13px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:12px">Закрыть</button>
+        </div>
+      </div>
     </div>
 
     <!-- NUTRITION -->
     <div class="page" id="page-nutrition">
+
+      <!-- Nutrition tabs -->
+      <div style="display:flex;gap:6px;padding:12px 16px 0;background:var(--bg)">
+        <button id="nutr-tab-today" onclick="showNutrTab('today')" style="flex:1;padding:9px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:var(--green);color:#fff">🍽 Сегодня</button>
+        <button id="nutr-tab-history" onclick="showNutrTab('history')" style="flex:1;padding:9px;border-radius:10px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--text2)">📊 История</button>
+      </div>
+
+      <!-- TODAY TAB -->
+      <div id="nutr-today">
 
       <!-- API Key setup -->
       <div id="api-key-setup" class="api-key-card" style="display:none">
@@ -297,6 +346,19 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
           ⚡ 330г углеводы · 🥑 85г жиры
         </div>
       </div>
+
+      </div><!-- /nutr-today -->
+
+      <!-- HISTORY TAB -->
+      <div id="nutr-history" style="display:none">
+        <!-- view toggle -->
+        <div style="display:flex;gap:6px;padding:12px 16px 0">
+          <button id="nutr-hist-week-btn" onclick="showNutrHistory('week')" style="flex:1;padding:8px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:var(--blue);color:#fff">По неделям</button>
+          <button id="nutr-hist-month-btn" onclick="showNutrHistory('month')" style="flex:1;padding:8px;border-radius:8px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:var(--bg3);color:var(--text2)">По месяцам</button>
+        </div>
+        <div id="nutr-history-content" style="padding:0 4px"></div>
+      </div>
+
     </div>
 
     <!-- WORKOUT -->
@@ -485,9 +547,13 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
         </div>
       </div>
       <div class="card">
-        <div class="card-title">API ключ</div>
-        <div style="font-size:13px;color:var(--text2);margin-bottom:10px" id="api-status-text">Не установлен</div>
-        <button onclick="clearApiKey()" style="padding:10px 16px;background:none;border:0.5px solid var(--border);border-radius:8px;color:var(--coral);font-size:13px;cursor:pointer">Удалить ключ</button>
+        <div class="card-title">API ключ (распознавание еды)</div>
+        <div style="font-size:13px;margin-bottom:10px" id="api-status-text">Не установлен</div>
+        <input class="api-input" type="password" id="api-key-input-settings" placeholder="sk-ant-api03-..." autocomplete="off" autocorrect="off" spellcheck="false" style="margin-bottom:10px">
+        <div style="display:flex;gap:8px">
+          <button onclick="saveApiKeyFromSettings()" style="flex:1;padding:10px;background:var(--green);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">Сохранить</button>
+          <button onclick="clearApiKey()" style="padding:10px 16px;background:none;border:0.5px solid var(--border);border-radius:8px;color:var(--coral);font-size:13px;cursor:pointer">Удалить</button>
+        </div>
       </div>
       <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить все данные</button>
     </div>
@@ -856,6 +922,14 @@ function saveApiKey() {
   showToast('✅ Ключ сохранён!');
 }
 function clearApiKey() { localStorage.removeItem('anthropic_key'); updateApiStatus(); showToast('Ключ удалён'); }
+function saveApiKeyFromSettings() {
+  const val = document.getElementById('api-key-input-settings').value.trim();
+  if (!val) { showToast('Введи ключ'); return; }
+  localStorage.setItem('anthropic_key', val);
+  document.getElementById('api-key-input-settings').value = '';
+  updateApiStatus();
+  showToast('✅ Ключ сохранён');
+}
 function updateApiStatus() {
   const has = !!getApiKey();
   const setup = document.getElementById('api-key-setup');
@@ -967,7 +1041,7 @@ function showPage(name, btn) {
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active');
-  if (name === 'home') renderHomeSummary();
+  if (name === 'home') { renderHomeSummary(); renderCalendar(); }
   if (name === 'goals') renderVision();
 }
 function showWorkoutTab(tab, btn) {
@@ -1021,7 +1095,7 @@ function buildWeekGrid(id) {
 }
 function toggleWeekDay(key) {
   state.weekDone[key] = !state.weekDone[key]; saveState(state);
-  buildWeekGrid('week-grid-home'); buildWeekGrid('week-grid-workout');
+  buildWeekGrid('week-grid-workout');
 }
 
 // ── MEAL TRACKING ──────────────────────────────────
@@ -2435,6 +2509,196 @@ function renderHabits() {
 }
 
 // ── HOME SUMMARY ──────────────────────────────────
+// ── CALENDAR ───────────────────────────────────────
+let calYear = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calSelectedDate = null;
+
+const ruMonthsFull = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+const ruMonthsShort = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+
+function getDayScore(dateStr) {
+  // Returns {score: 0-100, kcal, protein, workout, habitPct, sleep, tasks}
+  let total = 0, count = 0;
+
+  // Nutrition
+  const meals = JSON.parse(localStorage.getItem('meals_'+dateStr) || '[]');
+  const kcal = meals.reduce((s,m)=>s+(m.kcal||0),0);
+  const protein = meals.reduce((s,m)=>s+(m.protein||0),0);
+  const nutPct = meals.length > 0 ? Math.round((Math.min(100,kcal/3050*100)+Math.min(100,protein/195*100))/2) : 0;
+  if (meals.length > 0) { total += nutPct; count++; }
+
+  // Workout
+  const wkState = JSON.parse(localStorage.getItem('fitness_state') || '{}');
+  const workout = (wkState.weekDone && wkState.weekDone[dateStr]) ? 100 : 0;
+  // Check per-day workout log
+  const wdayDone = localStorage.getItem('workout_done_'+dateStr) === '1';
+  const workoutScore = (workout || wdayDone) ? 100 : 0;
+  // Don't penalize for no workout — only count if done
+  if (workoutScore > 0) { total += 100; count++; }
+
+  // Habits
+  const habits = loadHabits();
+  const habitLog = loadHabitLog();
+  const dayHabits = habitLog[dateStr] || {};
+  const activeHabits = habits.filter(h=>h.active);
+  const habitsDone = activeHabits.filter(h=>dayHabits[h.id]).length;
+  const habitPct = activeHabits.length ? Math.round(habitsDone/activeHabits.length*100) : 0;
+  if (activeHabits.length > 0) { total += habitPct; count++; }
+
+  // Sleep
+  const sleepData = loadSleepData();
+  const sl = sleepData[dateStr];
+  const sleepPct = sl ? Math.min(100, Math.round(sl.hours/8*100)) : 0;
+  if (sl) { total += sleepPct; count++; }
+
+  // Tasks
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+  const tasksDone = tasks.filter(t=>t.done).length;
+  const taskPct = tasks.length ? Math.round(tasksDone/tasks.length*100) : 0;
+  if (tasks.length > 0) { total += taskPct; count++; }
+
+  const score = count > 0 ? Math.round(total/count) : -1; // -1 = no data
+  return {score, kcal, protein, workout: workoutScore, habitPct, sleep: sl ? sl.hours : null, tasksDone, taskTotal: tasks.length};
+}
+
+function getDayColor(score, isFuture) {
+  if (isFuture) return 'transparent';
+  if (score < 0) return 'var(--bg3)'; // no data
+  if (score >= 70) return 'var(--green)';
+  if (score >= 40) return 'var(--amber)';
+  return 'var(--coral)';
+}
+
+function renderCalendar() {
+  const label = document.getElementById('cal-month-label');
+  const grid = document.getElementById('home-calendar-grid');
+  if (!label || !grid) return;
+
+  label.textContent = `${ruMonthsFull[calMonth]} ${calYear}`;
+
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const firstDay = new Date(calYear, calMonth, 1);
+  const lastDay = new Date(calYear, calMonth+1, 0);
+  const startDow = (firstDay.getDay() + 6) % 7; // Mon=0
+
+  let html = '';
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    html += `<div></div>`;
+  }
+
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isFuture = dateStr > todayStr;
+    const isToday = dateStr === todayStr;
+    const {score} = getDayScore(dateStr);
+    const bgColor = getDayColor(score, isFuture);
+
+    // Check if has scheduled tasks
+    const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+    const hasFutureTasks = tasks.length > 0;
+
+    html += `<div onclick="openDayDetail('${dateStr}')" style="
+      aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      border-radius:8px;cursor:pointer;position:relative;
+      background:${isFuture ? 'var(--bg3)' : bgColor};
+      opacity:${isFuture ? '0.6' : '1'};
+      border:${isToday ? '2px solid var(--text)' : '2px solid transparent'};
+    ">
+      <span style="font-size:12px;font-weight:${isToday?'700':'400'};color:${!isFuture && score>=0 && bgColor!=='var(--bg3)' ? '#fff' : 'var(--text)'}">${d}</span>
+      ${hasFutureTasks && isFuture ? `<div style="width:4px;height:4px;background:var(--blue);border-radius:50%;position:absolute;bottom:3px"></div>` : ''}
+    </div>`;
+  }
+
+  grid.innerHTML = html;
+}
+
+function calPrevMonth() {
+  calMonth--; if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+function calNextMonth() {
+  calMonth++; if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderCalendar();
+}
+
+function openDayDetail(dateStr) {
+  calSelectedDate = dateStr;
+  const d = new Date(dateStr+'T12:00:00');
+  const dayNames = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
+  document.getElementById('day-detail-title').textContent =
+    `${dayNames[d.getDay()]}, ${d.getDate()} ${ruMonthsShort[d.getMonth()]} ${d.getFullYear()}`;
+
+  const {score, kcal, protein, workout, habitPct, sleep, tasksDone, taskTotal} = getDayScore(dateStr);
+  const isFuture = dateStr > new Date().toISOString().slice(0,10);
+
+  // Scheduled tasks for this day
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+
+  let html = '';
+
+  if (!isFuture && score >= 0) {
+    html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">`;
+    if (kcal > 0) html += `<div style="background:var(--bg3);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--text3)">🍽 Питание</div><div style="font-size:15px;font-weight:700;color:var(--green);margin-top:2px">${kcal} ккал</div><div style="font-size:11px;color:var(--text3)">${protein}г белка</div></div>`;
+    if (workout) html += `<div style="background:var(--bg3);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--text3)">💪 Тренировка</div><div style="font-size:15px;font-weight:700;color:var(--blue);margin-top:2px">✅ Выполнена</div></div>`;
+    if (habitPct > 0) html += `<div style="background:var(--bg3);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--text3)">✅ Привычки</div><div style="font-size:15px;font-weight:700;color:var(--amber);margin-top:2px">${habitPct}%</div></div>`;
+    if (sleep) html += `<div style="background:var(--bg3);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--text3)">😴 Сон</div><div style="font-size:15px;font-weight:700;color:var(--blue);margin-top:2px">${sleep}ч</div></div>`;
+    if (taskTotal > 0) html += `<div style="background:var(--bg3);border-radius:10px;padding:10px"><div style="font-size:11px;color:var(--text3)">🎯 Задачи</div><div style="font-size:15px;font-weight:700;color:var(--coral);margin-top:2px">${tasksDone}/${taskTotal}</div></div>`;
+    html += `</div>`;
+  } else if (isFuture) {
+    html += `<div style="font-size:13px;color:var(--text3);margin-bottom:14px">Будущий день — добавь задачу ниже</div>`;
+  } else {
+    html += `<div style="font-size:13px;color:var(--text3);margin-bottom:14px">Нет данных за этот день</div>`;
+  }
+
+  // Existing tasks
+  if (tasks.length > 0) {
+    html += `<div style="font-size:12px;color:var(--text2);font-weight:600;margin-bottom:8px">📌 ЗАДАЧИ</div>`;
+    html += tasks.map((t,i) => `
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--border)">
+        <div onclick="toggleDayTask('${dateStr}',${i})" style="width:18px;height:18px;border-radius:50%;border:1.5px solid ${t.done?'var(--green)':'var(--border)'};background:${t.done?'var(--green)':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center">
+          ${t.done?'<svg viewBox="0 0 24 24" style="width:10px;height:10px;stroke:#fff;fill:none;stroke-width:3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+        </div>
+        <div style="flex:1;font-size:13px;color:${t.done?'var(--text3)':'var(--text)'};text-decoration:${t.done?'line-through':'none'}">${t.text}</div>
+        <div onclick="deleteDayTask('${dateStr}',${i})" style="color:var(--text3);font-size:16px;cursor:pointer;padding:2px 6px">×</div>
+      </div>`).join('');
+  }
+
+  document.getElementById('day-detail-content').innerHTML = html;
+  document.getElementById('day-task-input').value = '';
+  document.getElementById('day-detail-modal').style.display = 'flex';
+}
+
+function addDayTask() {
+  const input = document.getElementById('day-task-input');
+  const text = input.value.trim();
+  if (!text || !calSelectedDate) return;
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+calSelectedDate) || '[]');
+  tasks.push({text, done: false, created: Date.now()});
+  localStorage.setItem('daily_tasks_'+calSelectedDate, JSON.stringify(tasks));
+  input.value = '';
+  openDayDetail(calSelectedDate);
+  renderCalendar();
+}
+
+function toggleDayTask(dateStr, idx) {
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+  if (tasks[idx]) tasks[idx].done = !tasks[idx].done;
+  localStorage.setItem('daily_tasks_'+dateStr, JSON.stringify(tasks));
+  openDayDetail(dateStr);
+}
+
+function deleteDayTask(dateStr, idx) {
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+  tasks.splice(idx, 1);
+  localStorage.setItem('daily_tasks_'+dateStr, JSON.stringify(tasks));
+  openDayDetail(dateStr);
+  renderCalendar();
+}
+
+// ── HOME SUMMARY ───────────────────────────────────
 function renderHomeSummary() {
   const daily = document.getElementById('home-daily-summary');
   const weekly = document.getElementById('home-weekly-summary');
@@ -2505,7 +2769,20 @@ function renderHomeSummary() {
     },
   ];
 
-  // Simple weekly stats
+  // Weekly nutrition avg
+  const weekNutData = days7.map(d => {
+    const meals = JSON.parse(localStorage.getItem('meals_'+d) || '[]');
+    if (!meals.length) return null;
+    return {
+      kcal: meals.reduce((s,m)=>s+(m.kcal||0),0),
+      protein: meals.reduce((s,m)=>s+(m.protein||0),0),
+    };
+  });
+  const nutDays = weekNutData.filter(v=>v!==null);
+  const avgKcal = nutDays.length ? Math.round(nutDays.reduce((s,v)=>s+v.kcal,0)/nutDays.length) : 0;
+  const avgProtein = nutDays.length ? Math.round(nutDays.reduce((s,v)=>s+v.protein,0)/nutDays.length) : 0;
+
+  // Weekly habits & sleep
   const weekHabits = days7.map(d => {
     const log = habitLog[d] || {};
     const done = activeHabits.filter(h=>log[h.id]).length;
@@ -2513,38 +2790,32 @@ function renderHomeSummary() {
   });
   const weekSleep = days7.map(d => sleepData[d] ? sleepData[d].hours : null);
   const avgHabits = Math.round(weekHabits.reduce((s,v)=>s+v,0)/7);
-  const avgSleep = (weekSleep.filter(v=>v!==null).reduce((s,v)=>s+v,0) / (weekSleep.filter(v=>v!==null).length||1)).toFixed(1);
+  const sleepVals = weekSleep.filter(v=>v!==null);
+  const avgSleep = sleepVals.length ? (sleepVals.reduce((s,v)=>s+v,0)/sleepVals.length).toFixed(1) : '—';
 
   weekly.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
-      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
-        <div style="font-size:18px;font-weight:700;color:var(--blue)">${trainDays}/3</div>
-        <div style="font-size:11px;color:var(--text3)">💪 тренировок</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">🍽 Питание (ср. за неделю)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--green)">${avgKcal > 0 ? avgKcal+' ккал' : '—'}</div>
+        ${avgProtein > 0 ? `<div style="font-size:11px;color:var(--text3);margin-top:2px">${avgProtein}г белка · ${nutDays.length} дн. из 7</div>` : ''}
+        ${avgKcal > 0 ? `<div style="margin-top:6px;height:4px;background:var(--bg4);border-radius:2px"><div style="width:${Math.min(100,Math.round(avgKcal/3050*100))}%;height:100%;background:var(--green);border-radius:2px"></div></div>` : ''}
       </div>
-      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
-        <div style="font-size:18px;font-weight:700;color:var(--amber)">${avgHabits}%</div>
-        <div style="font-size:11px;color:var(--text3)">✅ привычки</div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">💪 Тренировки</div>
+        <div style="font-size:16px;font-weight:700;color:var(--blue)">${trainDays}/3</div>
+        <div style="margin-top:6px;height:4px;background:var(--bg4);border-radius:2px"><div style="width:${Math.min(100,Math.round(trainDays/3*100))}%;height:100%;background:var(--blue);border-radius:2px"></div></div>
       </div>
-      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px;text-align:center">
-        <div style="font-size:18px;font-weight:700;color:var(--blue)">${avgSleep}ч</div>
-        <div style="font-size:11px;color:var(--text3)">😴 сон ср.</div>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">✅ Привычки (ср.)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--amber)">${avgHabits}%</div>
+        <div style="margin-top:6px;height:4px;background:var(--bg4);border-radius:2px"><div style="width:${avgHabits}%;height:100%;background:var(--amber);border-radius:2px"></div></div>
       </div>
-    </div>
-    <div style="display:flex;gap:4px">${days7.map((d,i)=>{
-      const hl=weekHabits[i]; const sl=weekSleep[i];
-      const dd=new Date(d+'T12:00:00');
-      const isToday=d===todayDate;
-      return `<div style="flex:1;text-align:center">
-        <div style="font-size:10px;color:${isToday?'var(--text)':'var(--text3)'};margin-bottom:3px">${dayAbbr[dd.getDay()]}</div>
-        <div style="height:28px;background:var(--bg4);border-radius:4px;overflow:hidden;position:relative">
-          <div style="position:absolute;bottom:0;left:0;right:0;height:${hl}%;background:var(--amber);opacity:0.6"></div>
-          ${sl?`<div style="position:absolute;bottom:0;left:0;right:0;height:${Math.round(sl/10*100)}%;background:var(--blue);opacity:0.4"></div>`:''}
-        </div>
-      </div>`;
-    }).join('')}</div>
-    <div style="display:flex;gap:12px;margin-top:6px;font-size:10px;color:var(--text3)">
-      <span><span style="display:inline-block;width:8px;height:8px;background:var(--amber);opacity:0.6;border-radius:2px;margin-right:3px"></span>Привычки</span>
-      <span><span style="display:inline-block;width:8px;height:8px;background:var(--blue);opacity:0.4;border-radius:2px;margin-right:3px"></span>Сон</span>
+      <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:10px">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:4px">😴 Сон (ср.)</div>
+        <div style="font-size:16px;font-weight:700;color:var(--blue)">${avgSleep}${avgSleep!=='—'?'ч':''}</div>
+        ${avgSleep!=='—'?`<div style="margin-top:6px;height:4px;background:var(--bg4);border-radius:2px"><div style="width:${Math.min(100,Math.round(parseFloat(avgSleep)/8*100))}%;height:100%;background:var(--blue);border-radius:2px"></div></div>`:''}
+      </div>
     </div>`;
 }
 
@@ -2661,6 +2932,186 @@ function deleteBodyScan(id) {
   renderBodyScans();
 }
 
+// ── NUTRITION TABS & HISTORY ───────────────────────
+function showNutrTab(tab) {
+  document.getElementById('nutr-today').style.display = tab==='today' ? 'block' : 'none';
+  document.getElementById('nutr-history').style.display = tab==='history' ? 'block' : 'none';
+  document.getElementById('nutr-tab-today').style.background = tab==='today' ? 'var(--green)' : 'var(--bg3)';
+  document.getElementById('nutr-tab-today').style.color = tab==='today' ? '#fff' : 'var(--text2)';
+  document.getElementById('nutr-tab-history').style.background = tab==='history' ? 'var(--green)' : 'var(--bg3)';
+  document.getElementById('nutr-tab-history').style.color = tab==='history' ? '#fff' : 'var(--text2)';
+  if (tab==='history') showNutrHistory('week');
+}
+
+function getAllNutritionDays() {
+  // Collect all meals_YYYY-MM-DD keys and compute daily totals
+  const days = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (!key.startsWith('meals_')) continue;
+    const date = key.replace('meals_', ''); // YYYY-MM-DD
+    try {
+      const meals = JSON.parse(localStorage.getItem(key) || '[]');
+      if (meals.length === 0) continue;
+      days[date] = meals.reduce((t, m) => ({
+        kcal: t.kcal + (m.kcal||0),
+        protein: t.protein + (m.protein||0),
+        carbs: t.carbs + (m.carbs||0),
+        fat: t.fat + (m.fat||0),
+        meals: t.meals + 1
+      }), {kcal:0, protein:0, carbs:0, fat:0, meals:0});
+    } catch {}
+  }
+  return days;
+}
+
+function getWeekKey(dateStr) {
+  const d = new Date(dateStr);
+  const day = d.getDay() || 7; // Mon=1..Sun=7
+  const mon = new Date(d); mon.setDate(d.getDate() - day + 1);
+  return mon.toISOString().slice(0,10);
+}
+
+function getMonthKey(dateStr) { return dateStr.slice(0,7); } // YYYY-MM
+
+function avg(arr, key) {
+  const vals = arr.map(d => d[key]).filter(v => v > 0);
+  return vals.length ? Math.round(vals.reduce((a,b)=>a+b,0)/vals.length) : 0;
+}
+
+function macroBar(val, goal, color) {
+  const pct = Math.min(100, Math.round(val/goal*100));
+  return `<div style="display:flex;align-items:center;gap:6px;margin-bottom:4px">
+    <div style="width:60px;font-size:11px;color:var(--text2)">${val}</div>
+    <div style="flex:1;height:5px;background:var(--bg4);border-radius:3px">
+      <div style="width:${pct}%;height:100%;background:${color};border-radius:3px"></div>
+    </div>
+    <div style="width:28px;font-size:10px;color:var(--text3);text-align:right">${pct}%</div>
+  </div>`;
+}
+
+function showNutrHistory(view) {
+  document.getElementById('nutr-hist-week-btn').style.background = view==='week' ? 'var(--blue)' : 'var(--bg3)';
+  document.getElementById('nutr-hist-week-btn').style.color = view==='week' ? '#fff' : 'var(--text2)';
+  document.getElementById('nutr-hist-month-btn').style.background = view==='month' ? 'var(--blue)' : 'var(--bg3)';
+  document.getElementById('nutr-hist-month-btn').style.color = view==='month' ? '#fff' : 'var(--text2)';
+
+  const allDays = getAllNutritionDays();
+  const dates = Object.keys(allDays).sort().reverse();
+
+  if (dates.length === 0) {
+    document.getElementById('nutr-history-content').innerHTML =
+      `<div class="card"><div style="text-align:center;color:var(--text3);font-size:13px;padding:20px">
+        Ещё нет данных.<br>Начни вносить приёмы пищи — и история появится здесь.
+      </div></div>`;
+    return;
+  }
+
+  const GOALS = {kcal:3050, protein:195, carbs:330, fat:85};
+  const ruMonths = ['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  const ruDays = ['вс','пн','вт','ср','чт','пт','сб'];
+
+  let html = '';
+
+  if (view === 'week') {
+    // Group by week
+    const weeks = {};
+    dates.forEach(d => {
+      const wk = getWeekKey(d);
+      if (!weeks[wk]) weeks[wk] = [];
+      weeks[wk].push({date: d, ...allDays[d]});
+    });
+
+    Object.keys(weeks).sort().reverse().forEach(wk => {
+      const days = weeks[wk].sort((a,b) => a.date > b.date ? -1 : 1);
+      const wkEnd = new Date(wk); wkEnd.setDate(wkEnd.getDate()+6);
+      const wkLabel = `${new Date(wk).getDate()} – ${wkEnd.getDate()} ${ruMonths[wkEnd.getMonth()]}`;
+      const avgKcal = avg(days,'kcal'), avgP = avg(days,'protein'), avgC = avg(days,'carbs'), avgF = avg(days,'fat');
+      const daysCount = days.length;
+
+      html += `<div class="card" style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:600">📅 ${wkLabel}</div>
+          <div style="font-size:11px;color:var(--text3)">${daysCount} ${daysCount===1?'день':daysCount<5?'дня':'дней'}</div>
+        </div>
+        <div style="background:var(--bg3);border-radius:10px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600">СРЕДНЕЕ ЗА НЕДЕЛЮ</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px">
+            <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--green)">${avgKcal}</div><div style="font-size:9px;color:var(--text3)">ккал</div></div>
+            <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--blue)">${avgP}г</div><div style="font-size:9px;color:var(--text3)">белок</div></div>
+            <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--amber)">${avgC}г</div><div style="font-size:9px;color:var(--text3)">углев.</div></div>
+            <div style="text-align:center"><div style="font-size:15px;font-weight:700;color:var(--coral)">${avgF}г</div><div style="font-size:9px;color:var(--text3)">жиры</div></div>
+          </div>
+          ${macroBar(avgKcal, GOALS.kcal, 'var(--green)')}
+          ${macroBar(avgP, GOALS.protein, 'var(--blue)')}
+        </div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600">ПО ДНЯМ</div>
+        ${days.map(d => {
+          const pct = Math.min(100, Math.round(d.kcal/GOALS.kcal*100));
+          const dObj = new Date(d.date);
+          const dayLabel = `${ruDays[dObj.getDay()]} ${dObj.getDate()}`;
+          const barColor = pct >= 90 ? 'var(--green)' : pct >= 60 ? 'var(--amber)' : 'var(--coral)';
+          return `<div style="display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--border)">
+            <div style="width:32px;font-size:11px;color:var(--text2)">${dayLabel}</div>
+            <div style="flex:1;height:6px;background:var(--bg4);border-radius:3px">
+              <div style="width:${pct}%;height:100%;background:${barColor};border-radius:3px"></div>
+            </div>
+            <div style="width:38px;font-size:11px;font-weight:600;text-align:right">${d.kcal}</div>
+            <div style="width:30px;font-size:10px;color:var(--blue);text-align:right">${d.protein}г</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    });
+
+  } else {
+    // Group by month
+    const months = {};
+    dates.forEach(d => {
+      const mk = getMonthKey(d);
+      if (!months[mk]) months[mk] = [];
+      months[mk].push({date: d, ...allDays[d]});
+    });
+
+    Object.keys(months).sort().reverse().forEach(mk => {
+      const days = months[mk];
+      const [yr, mo] = mk.split('-');
+      const moLabel = `${ruMonths[parseInt(mo)-1]} ${yr}`;
+      const avgKcal = avg(days,'kcal'), avgP = avg(days,'protein'), avgC = avg(days,'carbs'), avgF = avg(days,'fat');
+      const totalKcal = days.reduce((s,d)=>s+d.kcal,0);
+      const daysCount = days.length;
+
+      html += `<div class="card" style="margin-top:8px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <div style="font-size:14px;font-weight:600">📆 ${moLabel}</div>
+          <div style="font-size:11px;color:var(--text3)">${daysCount} дн. · ${Math.round(totalKcal/1000)}к ккал</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:8px">
+          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:8px">
+            <div style="font-size:15px;font-weight:700;color:var(--green)">${avgKcal}</div>
+            <div style="font-size:9px;color:var(--text3)">ср. ккал</div>
+          </div>
+          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:8px">
+            <div style="font-size:15px;font-weight:700;color:var(--blue)">${avgP}г</div>
+            <div style="font-size:9px;color:var(--text3)">ср. белок</div>
+          </div>
+          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:8px">
+            <div style="font-size:15px;font-weight:700;color:var(--amber)">${avgC}г</div>
+            <div style="font-size:9px;color:var(--text3)">ср. угл.</div>
+          </div>
+          <div style="text-align:center;background:var(--bg3);border-radius:8px;padding:8px">
+            <div style="font-size:15px;font-weight:700;color:var(--coral)">${avgF}г</div>
+            <div style="font-size:9px;color:var(--text3)">ср. жиры</div>
+          </div>
+        </div>
+        ${macroBar(avgKcal, GOALS.kcal, 'var(--green)')}
+        ${macroBar(avgP, GOALS.protein, 'var(--blue)')}
+      </div>`;
+    });
+  }
+
+  document.getElementById('nutr-history-content').innerHTML = html || `<div class="card"><div style="text-align:center;color:var(--text3);font-size:13px;padding:20px">Нет данных для отображения</div></div>`;
+}
+
 // ── EXPORT / IMPORT ────────────────────────────────
 function showDataModal() {
   const m = document.getElementById('data-modal');
@@ -2707,7 +3158,6 @@ function importData(input) {
 // ── BOOT ───────────────────────────────────────────
 buildExercises(exercisesA,'exercises-A','A');
 buildExercises(exercisesB,'exercises-B','B');
-buildWeekGrid('week-grid-home');
 buildWeekGrid('week-grid-workout');
 buildCalendar();
 renderMeals();
@@ -2719,6 +3169,7 @@ renderSleepPage();
 renderHabits();
 renderVision();
 renderHomeSummary();
+renderCalendar();
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
