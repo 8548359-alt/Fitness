@@ -218,20 +218,28 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
       </div>
 
       <!-- Day detail modal -->
-      <div id="day-detail-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center">
-        <div style="background:var(--bg2);border-radius:24px 24px 0 0;padding:20px 20px calc(20px + env(safe-area-inset-bottom));width:100%;max-width:480px;max-height:80vh;overflow-y:auto;border-top:0.5px solid var(--border)">
-          <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 16px"></div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:16px" id="day-detail-title"></div>
-          <div id="day-detail-content"></div>
-          <!-- Add task to this day -->
-          <div style="margin-top:16px;border-top:0.5px solid var(--border);padding-top:14px">
-            <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">📌 ДОБАВИТЬ ЗАДАЧУ НА ЭТОТ ДЕНЬ</div>
-            <div style="display:flex;gap:8px">
-              <input type="text" id="day-task-input" placeholder="Например: запись к стоматологу..." style="flex:1;padding:10px;background:var(--bg3);border:0.5px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;outline:none">
-              <button onclick="addDayTask()" style="padding:10px 14px;background:var(--blue);border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:600;cursor:pointer">+</button>
+      <div id="day-detail-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.75);" onclick="closeDayModal(event)">
+        <div id="day-detail-sheet" style="position:absolute;bottom:0;left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;padding:0 0 calc(16px + env(safe-area-inset-bottom));max-height:88vh;display:flex;flex-direction:column;border-top:0.5px solid var(--border)">
+          <!-- Handle + header -->
+          <div style="padding:12px 20px 0;flex-shrink:0">
+            <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 14px"></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div style="font-size:16px;font-weight:600" id="day-detail-title"></div>
+              <button onclick="closeDayModalBtn()" style="background:var(--bg3);border:none;border-radius:50%;width:30px;height:30px;font-size:18px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">×</button>
             </div>
           </div>
-          <button onclick="document.getElementById('day-detail-modal').style.display='none'" style="width:100%;padding:13px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:12px">Закрыть</button>
+          <!-- Scrollable content -->
+          <div style="overflow-y:auto;-webkit-overflow-scrolling:touch;flex:1;padding:0 20px">
+            <div id="day-detail-content"></div>
+            <!-- Add task -->
+            <div style="margin-top:16px;border-top:0.5px solid var(--border);padding-top:14px;padding-bottom:8px">
+              <div style="font-size:12px;color:var(--text2);margin-bottom:8px;font-weight:600">📌 ДОБАВИТЬ ЗАДАЧУ НА ЭТОТ ДЕНЬ</div>
+              <div style="display:flex;gap:8px">
+                <input type="text" id="day-task-input" placeholder="Например: запись к стоматологу..." style="flex:1;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;-webkit-appearance:none">
+                <button onclick="addDayTask()" style="padding:11px 16px;background:var(--blue);border:none;border-radius:10px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;flex-shrink:0">+</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -2671,7 +2679,17 @@ function openDayDetail(dateStr) {
 
   document.getElementById('day-detail-content').innerHTML = html;
   document.getElementById('day-task-input').value = '';
-  document.getElementById('day-detail-modal').style.display = 'flex';
+  const modal = document.getElementById('day-detail-modal');
+  modal.style.display = 'block';
+}
+
+function closeDayModalBtn() {
+  document.getElementById('day-detail-modal').style.display = 'none';
+}
+function closeDayModal(e) {
+  if (e.target === document.getElementById('day-detail-modal')) {
+    document.getElementById('day-detail-modal').style.display = 'none';
+  }
 }
 
 function addDayTask() {
