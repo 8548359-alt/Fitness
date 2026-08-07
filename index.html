@@ -525,7 +525,7 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
           <div style="font-size:13px;color:var(--text2)" id="daily-date-label"></div>
         </div>
         <div id="daily-goals-list"></div>
-        <button onclick="addDailyTask()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">+ Добавить задачу на неделю</button>
+        <button onclick="openAddTaskModal()" style="width:100%;padding:14px;background:none;border:1px dashed var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">+ Добавить задачу на неделю</button>
         <div style="height:8px"></div>
         <div class="card">
           <div class="card-title">Прогресс недели</div>
@@ -566,7 +566,27 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
       <button onclick="resetData()" style="width:100%;padding:14px;background:none;border:0.5px solid var(--border);border-radius:var(--radius-sm);color:var(--text2);font-size:14px;cursor:pointer;margin-top:4px">Сбросить все данные</button>
     </div>
 
-    <!-- FINANCE PAGE -->
+    <!-- ADD TASK MODAL -->
+    <div id="add-task-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.75)" onclick="closeAddTaskModal(event)">
+      <div style="position:absolute;bottom:calc(118px + env(safe-area-inset-bottom));left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;border-top:0.5px solid var(--border)">
+        <div style="padding:12px 20px 0;flex-shrink:0">
+          <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 14px"></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+            <div style="font-size:16px;font-weight:600">Новая задача</div>
+            <button onclick="document.getElementById('add-task-modal').style.display='none'" style="background:var(--bg3);border:none;border-radius:50%;width:32px;height:32px;font-size:20px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+          </div>
+        </div>
+        <div style="padding:0 20px 20px">
+          <!-- Task text input -->
+          <input type="text" id="new-task-text" placeholder="Название задачи..." style="width:100%;padding:12px 14px;background:var(--bg3);border:0.5px solid var(--border);border-radius:12px;color:var(--text);font-size:15px;outline:none;-webkit-appearance:none;box-sizing:border-box;margin-bottom:14px">
+          <!-- Day picker -->
+          <div style="font-size:12px;color:var(--text3);font-weight:600;margin-bottom:8px;letter-spacing:0.3px">ВЫБЕРИ ДЕНЬ</div>
+          <div id="task-day-picker" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:16px"></div>
+          <!-- Save button -->
+          <button onclick="saveNewTask()" style="width:100%;padding:14px;background:var(--green);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer">Добавить задачу</button>
+        </div>
+      </div>
+    </div>
     <div class="page" id="page-finance">
       <div class="tab-row">
         <button class="tab-btn active" onclick="showFinTab('overview',this)">📊 Обзор</button>
@@ -1625,73 +1645,161 @@ function addMonthGoal() {
 
 // ── DAILY TASKS ────────────────────────────────────
 function renderDailyTasks() {
-  const d = new Date();
-  const days2 = ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'];
-  const lbl = document.getElementById('daily-date-label');
-  if (lbl) lbl.textContent = `${days2[d.getDay()]}, ${d.getDate()} ${monthNames[d.getMonth()]}`;
-
-  const tasks = loadGoals().dailyTasks;
   const list = document.getElementById('daily-goals-list');
-  list.innerHTML = '';
+  if (!list) return;
 
-  if (tasks.length === 0) {
-    const defaults = [
-      {id:'d1', done:false, text:'🏃 Тренировка / баскетбол'},
-      {id:'d2', done:false, text:'📖 30 мин на развитие (книга/курс)'},
-      {id:'d3', done:false, text:'🚬 Не курил сегодня'},
-      {id:'d4', done:false, text:'💊 Витамины и вода 2л'},
-      {id:'d5', done:false, text:'📞 Позвонил / написал сыну'},
-    ];
-    defaults.forEach(t => tasks.push(t));
-    saveDailyTasks(tasks);
+  const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  const dayNamesFull = ['Понедельник','Вторник','Среда','Четверг','Пятница','Суббота','Воскресенье'];
+
+  // Get Monday of current week
+  const today = new Date();
+  const dow = today.getDay() || 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow + 1);
+
+  let html = '';
+  let totalDone = 0, totalAll = 0;
+
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = d.toISOString().slice(0,10);
+    const isToday = dateStr === todayDate;
+    const isPast = dateStr < todayDate;
+    const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+
+    totalAll += tasks.length;
+    totalDone += tasks.filter(t=>t.done).length;
+
+    // Only show days that have tasks OR today
+    if (tasks.length === 0 && !isToday) continue;
+
+    html += `<div style="margin-bottom:8px">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 0 4px">
+        <div style="width:32px;height:32px;border-radius:50%;background:${isToday?'var(--green)':'var(--bg3)'};display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <span style="font-size:13px;font-weight:700;color:${isToday?'#fff':'var(--text2)'}">${d.getDate()}</span>
+        </div>
+        <div>
+          <div style="font-size:13px;font-weight:600;color:${isToday?'var(--green)':isPast?'var(--text3)':'var(--text)'}">${dayNamesFull[i]}</div>
+          <div style="font-size:11px;color:var(--text3)">${tasks.length ? tasks.filter(t=>t.done).length+'/'+tasks.length+' выполнено' : 'нет задач'}</div>
+        </div>
+      </div>`;
+
+    tasks.forEach((t, idx) => {
+      html += `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg3);border-radius:10px;margin-bottom:5px;${t.done?'opacity:0.5':''}">
+        <button onclick="toggleWeekTask('${dateStr}',${idx})" style="width:22px;height:22px;border-radius:50%;border:2px solid ${t.done?'var(--green)':'var(--border)'};background:${t.done?'var(--green)':'transparent'};cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0">
+          ${t.done?'<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:#fff;fill:none;stroke-width:3"><polyline points="20 6 9 17 4 12"/></svg>':''}
+        </button>
+        <div style="flex:1;font-size:14px;color:var(--text);${t.done?'text-decoration:line-through':''}">${t.text}</div>
+        <button onclick="deleteWeekTask('${dateStr}',${idx})" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 2px;line-height:1">×</button>
+      </div>`;
+    });
+
+    if (tasks.length === 0) {
+      html += `<div style="padding:10px 12px;background:var(--bg3);border-radius:10px;font-size:13px;color:var(--text3);text-align:center">Нет задач на этот день</div>`;
+    }
+
+    html += `</div>`;
   }
 
-  tasks.forEach((t, i) => {
-    const row = document.createElement('div');
-    row.className = 'card';
-    row.style.cssText = `margin-bottom:8px;padding:12px 14px;display:flex;align-items:center;gap:12px;${t.done?'opacity:0.5':''}`;
-    row.innerHTML = `
-      <button class="check-btn ${t.done?'done':''}" onclick="toggleDailyTask(${i})" style="flex-shrink:0">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-      </button>
-      <div style="flex:1;font-size:14px;color:var(--text);${t.done?'text-decoration:line-through':''}">${t.text}</div>
-      <button onclick="deleteDailyTask(${i})" style="background:none;border:none;color:var(--text3);font-size:18px;cursor:pointer">×</button>`;
-    list.appendChild(row);
-  });
-
-  updateDailyProgress(tasks);
+  list.innerHTML = html;
+  updateDailyProgress2(totalDone, totalAll);
 }
 
-function updateDailyProgress(tasks) {
-  const done = tasks.filter(t=>t.done).length;
-  const pct = tasks.length ? Math.round(done/tasks.length*100) : 0;
+function toggleWeekTask(dateStr, idx) {
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+  if (tasks[idx]) tasks[idx].done = !tasks[idx].done;
+  localStorage.setItem('daily_tasks_'+dateStr, JSON.stringify(tasks));
+  renderDailyTasks();
+  renderCalendar();
+}
+
+function deleteWeekTask(dateStr, idx) {
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
+  tasks.splice(idx, 1);
+  localStorage.setItem('daily_tasks_'+dateStr, JSON.stringify(tasks));
+  renderDailyTasks();
+  renderCalendar();
+}
+
+function updateDailyProgress2(done, total) {
+  const pct = total ? Math.round(done/total*100) : 0;
   const bar = document.getElementById('daily-prog-bar');
   const val = document.getElementById('daily-prog-val');
   if (bar) bar.style.width = pct + '%';
   if (val) val.textContent = pct + '%';
 }
 
-function toggleDailyTask(i) {
-  const tasks = loadGoals().dailyTasks;
-  tasks[i].done = !tasks[i].done;
-  saveDailyTasks(tasks);
-  renderDailyTasks();
+let selectedTaskDay = null;
+
+function openAddTaskModal() {
+  selectedTaskDay = todayDate; // default today
+  document.getElementById('new-task-text').value = '';
+  renderTaskDayPicker();
+  document.getElementById('add-task-modal').style.display = 'block';
+  setTimeout(() => document.getElementById('new-task-text').focus(), 100);
 }
 
-function deleteDailyTask(i) {
-  const tasks = loadGoals().dailyTasks;
-  tasks.splice(i, 1);
-  saveDailyTasks(tasks);
+function closeAddTaskModal(e) {
+  if (e.target === document.getElementById('add-task-modal')) {
+    document.getElementById('add-task-modal').style.display = 'none';
+  }
+}
+
+function renderTaskDayPicker() {
+  const picker = document.getElementById('task-day-picker');
+  const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  // Get Monday of current week
+  const today = new Date();
+  const dow = today.getDay() || 7; // Mon=1..Sun=7
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow + 1);
+
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    const dateStr = d.toISOString().slice(0,10);
+    const isSelected = dateStr === selectedTaskDay;
+    const isToday = dateStr === todayDate;
+    const isPast = dateStr < todayDate;
+    html += `<div onclick="selectTaskDay('${dateStr}')" style="
+      aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+      border-radius:10px;cursor:pointer;gap:2px;
+      background:${isSelected ? 'var(--green)' : 'var(--bg3)'};
+      opacity:${isPast ? '0.5' : '1'};
+      border:${isToday && !isSelected ? '2px solid var(--green)' : '2px solid transparent'};
+    ">
+      <span style="font-size:10px;color:${isSelected ? 'rgba(255,255,255,0.8)' : 'var(--text3)'};font-weight:500">${dayNames[i]}</span>
+      <span style="font-size:15px;font-weight:${isToday?'700':'500'};color:${isSelected ? '#fff' : 'var(--text)'}">${d.getDate()}</span>
+    </div>`;
+  }
+  picker.innerHTML = html;
+}
+
+function selectTaskDay(dateStr) {
+  selectedTaskDay = dateStr;
+  renderTaskDayPicker();
+}
+
+function saveNewTask() {
+  const text = document.getElementById('new-task-text').value.trim();
+  if (!text) { showToast('Введи название задачи'); return; }
+  if (!selectedTaskDay) { showToast('Выбери день'); return; }
+
+  // Save to daily_tasks_{date} — same storage as calendar
+  const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+selectedTaskDay) || '[]');
+  tasks.push({text, done: false, created: Date.now()});
+  localStorage.setItem('daily_tasks_'+selectedTaskDay, JSON.stringify(tasks));
+
+  document.getElementById('add-task-modal').style.display = 'none';
   renderDailyTasks();
+  renderCalendar();
+  showToast('✅ Задача добавлена');
 }
 
 function addDailyTask() {
-  const text = prompt('Новая задача на сегодня:');
-  if (!text) return;
-  const tasks = loadGoals().dailyTasks;
-  tasks.push({id:'d'+Date.now(), done:false, text});
-  saveDailyTasks(tasks);
-  renderDailyTasks();
+  openAddTaskModal();
 }
 
 // ── FINANCE SYSTEM ────────────────────────────────
