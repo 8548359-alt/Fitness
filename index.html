@@ -194,16 +194,16 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
           <div style="font-size:15px;font-weight:600" id="cal-month-label"></div>
           <button onclick="calNextMonth()" style="background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:0 6px">›</button>
         </div>
-        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px">
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Пн</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Вт</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Ср</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Чт</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Пт</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Сб</div>
-          <div style="text-align:center;font-size:10px;color:var(--text3)">Вс</div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Пн</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Вт</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Ср</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Чт</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Пт</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Сб</div>
+          <div style="text-align:center;font-size:11px;color:var(--text3);font-weight:600">Вс</div>
         </div>
-        <div id="home-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:3px"></div>
+        <div id="home-calendar-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px"></div>
         <div style="display:flex;gap:10px;margin-top:8px;flex-wrap:wrap">
           <span style="font-size:10px;color:var(--text3)"><span style="display:inline-block;width:8px;height:8px;background:var(--green);border-radius:2px;margin-right:3px;opacity:0.85"></span>Отличный день</span>
           <span style="font-size:10px;color:var(--text3)"><span style="display:inline-block;width:8px;height:8px;background:var(--amber);border-radius:2px;margin-right:3px;opacity:0.85"></span>Частично</span>
@@ -1042,6 +1042,7 @@ function showPage(name, btn) {
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active');
   if (name === 'home') { renderHomeSummary(); renderCalendar(); }
+  if (name === 'nutrition') { updateApiStatus(); showNutrTab('today'); }
   if (name === 'goals') renderVision();
 }
 function showWorkoutTab(tab, btn) {
@@ -2599,17 +2600,19 @@ function renderCalendar() {
     // Check if has scheduled tasks
     const tasks = JSON.parse(localStorage.getItem('daily_tasks_'+dateStr) || '[]');
     const hasFutureTasks = tasks.length > 0;
-
-    html += `<div onclick="openDayDetail('${dateStr}')" style="
-      aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-      border-radius:8px;cursor:pointer;position:relative;
-      background:${isFuture ? 'var(--bg3)' : bgColor};
-      opacity:${isFuture ? '0.6' : '1'};
-      border:${isToday ? '2px solid var(--text)' : '2px solid transparent'};
-    ">
-      <span style="font-size:12px;font-weight:${isToday?'700':'400'};color:${!isFuture && score>=0 && bgColor!=='var(--bg3)' ? '#fff' : 'var(--text)'}">${d}</span>
-      ${hasFutureTasks && isFuture ? `<div style="width:4px;height:4px;background:var(--blue);border-radius:50%;position:absolute;bottom:3px"></div>` : ''}
+    const textColor = !isFuture && bgColor !== 'var(--bg3)' ? '#fff' : 'var(--text)';
+    html += `<div onclick="openDayDetail('${dateStr}')" style="aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:10px;cursor:pointer;position:relative;background:${isFuture ? 'var(--bg3)' : bgColor};opacity:${isFuture && !hasFutureTasks ? '0.4' : '1'};border:${isToday ? '2.5px solid var(--text)' : '2px solid transparent'};min-height:38px;">
+      <span style="font-size:14px;font-weight:${isToday?'700':'500'};color:${textColor};line-height:1">${d}</span>
+      ${hasFutureTasks ? `<div style="width:5px;height:5px;background:var(--blue);border-radius:50%;position:absolute;bottom:4px"></div>` : ''}
     </div>`;
+
+
+
+
+
+
+
+
   }
 
   grid.innerHTML = html;
