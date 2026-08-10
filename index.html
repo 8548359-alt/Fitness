@@ -6,7 +6,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Fitness">
-<meta name="theme-color" content="#0a0a0a">
+<meta name="theme-color" content="#0a0a0a" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f0f4f0" media="(prefers-color-scheme: light)">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Fitness Dashboard</title>
@@ -20,6 +21,23 @@
   --coral: #D85A30; --coral-bg: rgba(216,90,48,0.12);
   --radius: 16px; --radius-sm: 10px;
   --safe-top: env(safe-area-inset-top); --safe-bottom: env(safe-area-inset-bottom);
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f0f4f0; --bg2: #ffffff; --bg3: #e8ede8; --bg4: #d8e0d8;
+    --border: rgba(0,0,0,0.08); --text: #1a1a1a; --text2: #5a6b5a; --text3: #8fa08f;
+    --green: #1a8f68; --green-bg: rgba(26,143,104,0.10);
+    --blue: #2e72c2; --blue-bg: rgba(46,114,194,0.10);
+    --amber: #c8820a; --amber-bg: rgba(200,130,10,0.10);
+    --coral: #c04820; --coral-bg: rgba(192,72,32,0.10);
+  }
+  .navbar { background: rgba(235,242,235,0.92) !important; }
+  .topbar { background: var(--bg) !important; }
+  input[type=range]::-webkit-slider-thumb { background: var(--text) !important; border: 2px solid var(--bg2) !important; box-shadow: 0 1px 4px rgba(0,0,0,0.2) !important; }
+  .week-dot { background: var(--bg3) !important; border: 1.5px solid var(--border) !important; }
+  .week-dot.done { background: var(--green) !important; border-color: var(--green) !important; }
+  select, input[type=date], input[type=text], input[type=number] { color-scheme: light; }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 html, body { height: 100%; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', sans-serif; overflow: hidden; }
@@ -612,22 +630,26 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
           <div class="metric-value" id="fin-total-assets" style="font-size:24px">0₽</div>
         </div>
 
-        <!-- Доходы: заработано vs получено -->
+        <!-- Доходы: заработано vs получено vs ожидается -->
         <div class="card">
           <div class="card-title">💰 Доходы</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
             <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:4px">ЗАРАБОТАНО ЗА ПЕРИОД</div>
-              <div style="font-size:20px;font-weight:700;color:var(--blue)" id="fin-earned">0₽</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:3px">по дате начисления</div>
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px">ПОЛУЧЕНО ФАКТИЧЕСКИ</div>
+              <div style="font-size:18px;font-weight:700;color:var(--green)" id="fin-total-income">0₽</div>
             </div>
-            <div style="background:var(--bg3);border-radius:var(--radius-sm);padding:12px">
-              <div style="font-size:11px;color:var(--text3);margin-bottom:4px">ПОЛУЧЕНО ФАКТИЧЕСКИ</div>
-              <div style="font-size:20px;font-weight:700;color:var(--green)" id="fin-total-income">0₽</div>
-              <div style="font-size:11px;color:var(--text3);margin-top:3px">деньги на счёт</div>
+            <div style="background:var(--amber-bg,rgba(239,159,39,0.1));border-radius:var(--radius-sm);padding:12px">
+              <div style="font-size:10px;color:var(--text3);margin-bottom:4px">ОЖИДАЕТСЯ</div>
+              <div style="font-size:18px;font-weight:700;color:var(--amber)" id="fin-pending-income">0₽</div>
             </div>
           </div>
-          <div class="prog-row" style="margin-bottom:0">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600">ОЖИДАЕМЫЕ ПОСТУПЛЕНИЯ</div>
+          <div id="fin-pending-list"></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+            <button onclick="openIncomeModal('pending')" style="padding:10px;background:var(--amber-bg,rgba(239,159,39,0.15));border:0.5px solid var(--amber);border-radius:10px;color:var(--amber);font-size:12px;font-weight:600;cursor:pointer">⏳ Ожидаемое</button>
+            <button onclick="openIncomeModal('received')" style="padding:10px;background:var(--green-bg);border:0.5px solid var(--green);border-radius:10px;color:var(--green);font-size:12px;font-weight:600;cursor:pointer">✅ Получено</button>
+          </div>
+          <div class="prog-row" style="margin-top:10px;margin-bottom:0">
             <div class="prog-label" style="font-size:12px">Получено</div>
             <div class="prog-bar"><div class="prog-fill" id="fin-received-bar" style="width:0%;background:var(--green)"></div></div>
             <div class="prog-val" id="fin-received-pct">0%</div>
@@ -877,6 +899,42 @@ input[type=text], input[type=password] { -webkit-appearance: none; }
 
 <div class="toast" id="toast"></div>
 
+<!-- INCOME MODAL -->
+<div id="income-modal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9999;background:rgba(0,0,0,0.75)" onclick="if(event.target===this)closeIncomeModal()">
+  <div style="position:absolute;bottom:calc(118px + env(safe-area-inset-bottom));left:0;right:0;background:var(--bg2);border-radius:24px 24px 0 0;border-top:0.5px solid var(--border);max-height:80vh;overflow-y:auto;-webkit-overflow-scrolling:touch">
+    <div style="padding:12px 20px 0">
+      <div style="width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:0 auto 14px"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div style="font-size:16px;font-weight:600" id="income-modal-title">⏳ Ожидаемое поступление</div>
+        <button onclick="closeIncomeModal()" style="background:var(--bg3);border:none;border-radius:50%;width:32px;height:32px;font-size:20px;color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center">×</button>
+      </div>
+    </div>
+    <div style="padding:0 20px 20px;display:flex;flex-direction:column;gap:10px">
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600">ИСТОЧНИК ДОХОДА</div>
+        <select id="income-modal-source" style="width:100%;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;-webkit-appearance:none;box-sizing:border-box"></select>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600">СУММА (₽)</div>
+        <input type="number" id="income-modal-amount" placeholder="0" inputmode="numeric" style="width:100%;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;font-weight:600;outline:none;-webkit-appearance:none;box-sizing:border-box">
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600" id="income-modal-date-label">ОЖИДАЕМАЯ ДАТА</div>
+        <input type="date" id="income-modal-date" style="width:100%;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;box-sizing:border-box">
+      </div>
+      <div id="income-modal-account-row">
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600">НА СЧЁТ</div>
+        <select id="income-modal-account" style="width:100%;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;-webkit-appearance:none;box-sizing:border-box"></select>
+      </div>
+      <div>
+        <div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-weight:600">ЗАМЕТКА (необязательно)</div>
+        <input type="text" id="income-modal-note" placeholder="Например: зарплата за август" style="width:100%;padding:11px 12px;background:var(--bg3);border:0.5px solid var(--border);border-radius:10px;color:var(--text);font-size:14px;outline:none;-webkit-appearance:none;box-sizing:border-box">
+      </div>
+      <button onclick="saveIncomeModal()" style="width:100%;padding:14px;background:var(--green);border:none;border-radius:12px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;margin-top:4px">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <!-- DATA MODAL -->
 <div id="data-modal" style="display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);align-items:flex-end;justify-content:center">
   <div style="background:var(--bg2);border-radius:24px 24px 0 0;padding:24px 20px calc(24px + env(safe-area-inset-bottom));width:100%;max-width:480px;border-top:0.5px solid var(--border)">
@@ -1071,6 +1129,7 @@ function showPage(name, btn) {
   btn.classList.add('active');
   if (name === 'home') { renderHomeSummary(); renderCalendar(); }
   if (name === 'nutrition') { updateApiStatus(); showNutrTab('today'); }
+  if (name === 'habits') renderHabits();
   if (name === 'goals') renderVision();
 }
 function showWorkoutTab(tab, btn) {
@@ -1112,19 +1171,33 @@ function toggleExercise(key, id, prefix) {
 }
 
 // ── Week grid ──────────────────────────────────────
+function getWeekDates() {
+  const today = new Date();
+  const dow = today.getDay() || 7;
+  const mon = new Date(today); mon.setDate(today.getDate() - dow + 1);
+  return Array.from({length:7}, (_,i) => {
+    const d = new Date(mon); d.setDate(mon.getDate()+i);
+    return d.toISOString().slice(0,10);
+  });
+}
 function buildWeekGrid(id) {
   const c = document.getElementById(id); if (!c) return; c.innerHTML = '';
+  const dates = getWeekDates();
   weekDayNames.forEach((d, i) => {
-    const key = 'day_'+i, isDone = !!state.weekDone[key];
+    const dateStr = dates[i];
+    const isDone = localStorage.getItem('workout_done_'+dateStr) === '1';
     const cell = document.createElement('div'); cell.className = 'week-cell';
-    cell.innerHTML = `<div class="week-cell-label">${d}</div><div class="week-dot ${isDone?'done':''}" onclick="toggleWeekDay('${key}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`;
+    cell.innerHTML = `<div class="week-cell-label">${d}</div><div class="week-dot ${isDone?'done':''}" onclick="toggleWeekDay('${dateStr}')"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>`;
     c.appendChild(cell);
   });
   updateMetrics();
 }
-function toggleWeekDay(key) {
-  state.weekDone[key] = !state.weekDone[key]; saveState(state);
+function toggleWeekDay(dateStr) {
+  const current = localStorage.getItem('workout_done_'+dateStr) === '1';
+  if (current) { localStorage.removeItem('workout_done_'+dateStr); }
+  else { localStorage.setItem('workout_done_'+dateStr, '1'); }
   buildWeekGrid('week-grid-workout');
+  renderCalendar();
 }
 
 // ── MEAL TRACKING ──────────────────────────────────
@@ -1251,12 +1324,9 @@ function updateProgressBars() { renderMeals(); }
 
 function updateMetrics() {
   const totals = getMealTotals();
-  const tc  = Object.values(state.weekDone).filter(Boolean).length;
-  const dp  = Math.round((Math.min(100, totals.kcal/3050*100) + Math.min(100, totals.protein/195*100)) / 2);
-  document.getElementById('m-kcal').textContent    = totals.kcal;
-  document.getElementById('m-protein').textContent = totals.protein + 'г';
-  document.getElementById('m-trains').textContent  = tc + '/3';
-  document.getElementById('m-progress').textContent = dp + '%';
+  const dates = getWeekDates ? getWeekDates() : [];
+  const tc = dates.filter(d => localStorage.getItem('workout_done_'+d) === '1').length;
+  const dp = Math.round((Math.min(100, totals.kcal/3050*100) + Math.min(100, totals.protein/195*100)) / 2);
   const st = document.getElementById('stat-trains');
   const ss = document.getElementById('stat-streak');
   const sb = document.getElementById('streak-badge-val');
@@ -1816,6 +1886,7 @@ function loadFin() {
       {id:'s3', icon:'📦', name:'Пассивный доход', planned:0},
     ])),
     incomeEntries: JSON.parse(localStorage.getItem('fin_income_entries') || '[]'),
+    pendingIncome: JSON.parse(localStorage.getItem('fin_pending_income') || '[]'),
     expenseCategories: JSON.parse(localStorage.getItem('fin_expense_cats') || JSON.stringify([
       {id:'c1', icon:'🍔', name:'Еда и кафе'},
       {id:'c2', icon:'🚗', name:'Транспорт'},
@@ -1894,9 +1965,12 @@ function renderFinOverview() {
   const receivedPct = totalEarned > 0 ? Math.min(100, Math.round(totalReceived/totalEarned*100)) : 0;
   const totalDebts = fin.debts.filter(d=>!d.returned).reduce((s,d) => s+(d.amount||0), 0);
 
+  // Pending income for period
+  const totalPending = fin.pendingIncome.filter(p => !p.received).reduce((s,p) => s+(p.amount||0), 0);
+
   document.getElementById('fin-total-assets').textContent = fmtMoney(totalAssets);
-  document.getElementById('fin-earned').textContent = fmtMoney(totalEarned || totalReceived);
   document.getElementById('fin-total-income').textContent = fmtMoney(totalReceived);
+  document.getElementById('fin-pending-income').textContent = fmtMoney(totalPending);
   document.getElementById('fin-total-expenses').textContent = fmtMoney(totalExpenses);
   document.getElementById('fin-balance').textContent = fmtMoney(balance);
   document.getElementById('fin-balance').style.color = balance >= 0 ? 'var(--green)' : 'var(--coral)';
@@ -1905,6 +1979,30 @@ function renderFinOverview() {
   document.getElementById('fin-received-bar').style.width = receivedPct + '%';
   document.getElementById('fin-received-pct').textContent = receivedPct + '%';
   document.getElementById('fin-debts-total').textContent = fmtMoney(totalDebts);
+  
+  // Pending income list in overview
+  const pendingList = document.getElementById('fin-pending-list');
+  if (pendingList) {
+    const upcoming = fin.pendingIncome.filter(p=>!p.received).sort((a,b)=>a.date>b.date?1:-1);
+    pendingList.innerHTML = upcoming.length === 0
+      ? '<div style="font-size:13px;color:var(--text3);padding:4px 0">Нет ожидаемых поступлений</div>'
+      : upcoming.slice(0,5).map((p,i) => {
+          const src = fin.incomeSources.find(s=>s.id===p.sourceId);
+          const daysLeft = Math.ceil((new Date(p.date)-new Date())/86400000);
+          const dLabel = daysLeft === 0 ? 'сегодня' : daysLeft > 0 ? 'через '+daysLeft+' дн.' : 'просрочено';
+          const dColor = daysLeft < 0 ? 'var(--coral)' : daysLeft <= 3 ? 'var(--amber)' : 'var(--text3)';
+          return \`<div class="fin-entry-row">
+            <div class="fin-entry-left">
+              <div class="fin-entry-name">\${src?src.icon+' '+src.name:p.note||'Поступление'}</div>
+              <div class="fin-entry-meta" style="color:\${dColor}">\${p.date} · \${dLabel}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div class="fin-entry-amount" style="color:var(--amber)">+\${fmtMoney(p.amount)}</div>
+              <button onclick="receivePendingIncome(\${fin.pendingIncome.indexOf(p)})" style="background:var(--green);border:none;border-radius:6px;padding:4px 8px;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Получил</button>
+            </div>
+          </div>\`;
+        }).join('');
+  }
 
   const dsum = document.getElementById('fin-debts-summary');
   const activeDebts = fin.debts.filter(d => !d.returned);
@@ -1959,7 +2057,7 @@ function renderFinOverview() {
       </div>`).join('');
     mLabels.innerHTML = mData.map(mo=>`<div style="flex:1;text-align:center;font-size:10px;color:var(--text3)">${mo.label}</div>`).join('');
     // Legend
-    mChart.insertAdjacentHTML('afterend','<div style="display:flex;gap:12px;margin-top:6px;font-size:11px;color:var(--text3)"><span><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:2px;margin-right:4px"></span>Доходы</span><span><span style="display:inline-block;width:10px;height:10px;background:var(--coral);border-radius:2px;margin-right:4px"></span>Расходы</span></div>');
+    if (!document.getElementById('fin-chart-legend')) { mChart.insertAdjacentHTML('afterend','<div id="fin-chart-legend" style="display:flex;gap:12px;margin-top:6px;font-size:11px;color:var(--text3)"><span><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:2px;margin-right:4px"></span>Доходы</span><span><span style="display:inline-block;width:10px;height:10px;background:var(--coral);border-radius:2px;margin-right:4px"></span>Расходы</span></div>'); }
   }
 }
 
@@ -2106,22 +2204,101 @@ function deleteIncomeSource(i) {
   renderIncome();
 }
 
-function addIncomeEntry() {
+function addIncomeEntry() { openIncomeModal('received'); }
+function addPendingIncomeEntry() { openIncomeModal('pending'); }
+
+let incomeModalMode = 'pending';
+function openIncomeModal(mode) {
+  incomeModalMode = mode;
   const fin = loadFin();
-  const srcNames = fin.incomeSources.map((s,i) => `${i+1}. ${s.icon} ${s.name}`).join('\n');
-  const srcIdx = parseInt(prompt(`Источник:\n${srcNames}\n\nВведи номер:`)) - 1;
-  if (isNaN(srcIdx) || srcIdx < 0 || srcIdx >= fin.incomeSources.length) return;
-  const amount = parseInt(prompt('Сумма (₽):'));
-  if (isNaN(amount) || amount <= 0) return;
-  const now = new Date();
-  const currentMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
-  const earnedMonth = prompt('За какой месяц заработано? (ГГГГ-ММ):', currentMonth) || currentMonth;
-  const dateReceived = prompt('Дата получения на счёт (ГГГГ-ММ-ДД):', todayDate) || todayDate;
-  const note = prompt('Заметка (необязательно):') || '';
-  fin.incomeEntries.push({id:'ie'+Date.now(), sourceId:fin.incomeSources[srcIdx].id, amount, note, date:dateReceived, earnedMonth});
-  saveFin('fin_income_entries', fin.incomeEntries);
-  renderIncome(); renderFinOverview();
-  showToast(`✅ +${fmtMoney(amount)} записано`);
+  const modal = document.getElementById('income-modal');
+  const title = document.getElementById('income-modal-title');
+  const srcSel = document.getElementById('income-modal-source');
+  const dateLabel = document.getElementById('income-modal-date-label');
+
+  title.textContent = mode === 'pending' ? '⏳ Ожидаемое поступление' : '✅ Фактическое получение';
+  dateLabel.textContent = mode === 'pending' ? 'Ожидаемая дата' : 'Дата получения';
+
+  srcSel.innerHTML = fin.incomeSources.map(s =>
+    `<option value="${s.id}">${s.icon} ${s.name}</option>`
+  ).join('') + `<option value="other">💬 Другое</option>`;
+
+  document.getElementById('income-modal-amount').value = '';
+  document.getElementById('income-modal-date').value = todayDate;
+  document.getElementById('income-modal-note').value = '';
+  document.getElementById('income-modal-account').innerHTML = fin.accounts.map(a =>
+    `<option value="${a.id}">${a.icon} ${a.name}</option>`
+  ).join('');
+
+  const accRow = document.getElementById('income-modal-account-row');
+  if (accRow) accRow.style.display = mode === 'received' ? 'block' : 'none';
+
+  modal.style.display = 'block';
+}
+
+function closeIncomeModal() {
+  document.getElementById('income-modal').style.display = 'none';
+}
+
+function saveIncomeModal() {
+  const fin = loadFin();
+  const sourceId = document.getElementById('income-modal-source').value;
+  const amount = parseInt(document.getElementById('income-modal-amount').value);
+  const date = document.getElementById('income-modal-date').value || todayDate;
+  const note = document.getElementById('income-modal-note').value.trim();
+
+  if (!amount || amount <= 0) { showToast('Введи сумму'); return; }
+
+  if (incomeModalMode === 'pending') {
+    fin.pendingIncome.push({id:'pi'+Date.now(), sourceId, amount, note, date, received:false});
+    saveFin('fin_pending_income', fin.pendingIncome);
+    showToast('⏳ Ожидаемое поступление добавлено');
+  } else {
+    const accountId = document.getElementById('income-modal-account').value;
+    const now = new Date();
+    const earnedMonth = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}`;
+    fin.incomeEntries.push({id:'ie'+Date.now(), sourceId, amount, note, date, earnedMonth});
+    saveFin('fin_income_entries', fin.incomeEntries);
+    // Update account balance
+    const accIdx = fin.accounts.findIndex(a=>a.id===accountId);
+    if (accIdx >= 0) {
+      fin.accounts[accIdx].balance = (fin.accounts[accIdx].balance||0) + amount;
+      saveFin('fin_accounts', fin.accounts);
+    }
+    showToast(`✅ +${fmtMoney(amount)} получено`);
+  }
+
+  closeIncomeModal();
+  renderIncome(); renderFinOverview(); renderAccounts();
+}
+
+function receivePendingIncome(idx) {
+  const fin = loadFin();
+  const p = fin.pendingIncome[idx];
+  if (!p) return;
+  // Open modal pre-filled as received
+  openIncomeModal('received');
+  setTimeout(() => {
+    document.getElementById('income-modal-source').value = p.sourceId;
+    document.getElementById('income-modal-amount').value = p.amount;
+    document.getElementById('income-modal-date').value = todayDate;
+    document.getElementById('income-modal-note').value = p.note || '';
+    // Mark pending as received on save — patch save
+    const origSave = window._origSaveIncomeModal;
+    window._pendingIdxToClose = idx;
+  }, 50);
+}
+
+function saveIncomeFull() {
+  // If came from receivePendingIncome, mark pending as received first
+  if (typeof window._pendingIdxToClose === 'number') {
+    const fin = loadFin();
+    const idx = window._pendingIdxToClose;
+    if (fin.pendingIncome[idx]) fin.pendingIncome[idx].received = true;
+    saveFin('fin_pending_income', fin.pendingIncome);
+    window._pendingIdxToClose = undefined;
+  }
+  saveIncomeModal();
 }
 
 function deleteIncomeEntry(i) {
@@ -2269,30 +2446,52 @@ function addDebt() {
   const note = prompt('Заметка (необязательно):') || '';
   const date = prompt('Дата выдачи:', todayDate) || todayDate;
   const fin = loadFin();
-  fin.debts.push({id:'debt'+Date.now(), person, amount, note, date, returned:false});
+  const returnDate = prompt('Ожидаемая дата возврата (ГГГГ-ММ-ДД):', '') || '';
+  fin.debts.push({id:'debt'+Date.now(), person, amount, note, date, returnDate, returned:false});
   saveFin('fin_debts', fin.debts);
-  // Also record as expense
-  const debtCat = fin.expenseCategories.find(c=>c.name==='Долги выданные') || {id:'debt-cat'};
+  // Record as expense
   fin.expenseEntries.push({id:'ee'+Date.now(), catId:'debt-cat', amount, note:'Долг: '+person, date});
   saveFin('fin_expense_entries', fin.expenseEntries);
+  // Auto-create pending income for return date
+  if (returnDate) {
+    fin.pendingIncome.push({id:'pi'+Date.now(), sourceId:'debt-return', amount, note:'Возврат долга: '+person, date:returnDate, received:false, debtLinked:true});
+    saveFin('fin_pending_income', fin.pendingIncome);
+  }
   renderDebts(); renderFinOverview();
-  showToast('✅ Долг записан');
+  showToast('✅ Долг записан' + (returnDate ? ' · Ожидаемый возврат добавлен' : ''));
 }
 
 function markDebtReturned(i) {
   const fin = loadFin();
+  const debt = fin.debts[i];
   fin.debts[i].returned = true;
   saveFin('fin_debts', fin.debts);
+  // Mark linked pending income as received
+  const pendingIdx = fin.pendingIncome.findIndex(p => p.debtLinked && p.note === 'Возврат долга: '+debt.person && !p.received);
+  if (pendingIdx >= 0) {
+    fin.pendingIncome[pendingIdx].received = true;
+    saveFin('fin_pending_income', fin.pendingIncome);
+  }
+  // Record as actual income entry
+  fin.incomeEntries.push({id:'ie'+Date.now(), sourceId:'debt-return', amount: debt.amount, note:'Возврат долга: '+debt.person, date: todayDate, earnedMonth: todayDate.slice(0,7)});
+  saveFin('fin_income_entries', fin.incomeEntries);
+  // Update account balance (ask which account)
   renderDebts(); renderFinOverview();
-  showToast('✅ Возврат отмечен!');
+  showToast('✅ Возврат получен! Доход записан.');
 }
 
 function deleteDebt(i) {
   if (!confirm('Удалить запись о долге?')) return;
   const fin = loadFin();
+  const debt = fin.debts[i];
+  // Remove linked expense entry created when debt was added
+  if (debt) {
+    const expIdx = fin.expenseEntries.findIndex(e => e.catId === 'debt-cat' && e.note === 'Долг: '+debt.person && e.date === debt.date && e.amount === debt.amount);
+    if (expIdx >= 0) { fin.expenseEntries.splice(expIdx, 1); saveFin('fin_expense_entries', fin.expenseEntries); }
+  }
   fin.debts.splice(i,1);
   saveFin('fin_debts', fin.debts);
-  renderDebts();
+  renderDebts(); renderFinOverview();
 }
 
 // ── FIN TAB SWITCHING ─────────────────────────────
@@ -2457,7 +2656,12 @@ const DEFAULT_HABITS = [
 ];
 
 function loadHabits() {
-  return JSON.parse(localStorage.getItem('habits_list') || JSON.stringify(DEFAULT_HABITS));
+  const stored = localStorage.getItem('habits_list');
+  if (!stored) {
+    localStorage.setItem('habits_list', JSON.stringify(DEFAULT_HABITS));
+    return DEFAULT_HABITS;
+  }
+  return JSON.parse(stored);
 }
 function saveHabits(h) { localStorage.setItem('habits_list', JSON.stringify(h)); }
 
@@ -3069,6 +3273,7 @@ function showNutrTab(tab) {
   document.getElementById('nutr-tab-today').style.color = tab==='today' ? '#fff' : 'var(--text2)';
   document.getElementById('nutr-tab-history').style.background = tab==='history' ? 'var(--green)' : 'var(--bg3)';
   document.getElementById('nutr-tab-history').style.color = tab==='history' ? '#fff' : 'var(--text2)';
+  if (tab==='today') { renderMeals(); updateApiStatus(); }
   if (tab==='history') showNutrHistory('week');
 }
 
