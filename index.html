@@ -1991,16 +1991,16 @@ function renderFinOverview() {
           const daysLeft = Math.ceil((new Date(p.date)-new Date())/86400000);
           const dLabel = daysLeft === 0 ? 'сегодня' : daysLeft > 0 ? 'через '+daysLeft+' дн.' : 'просрочено';
           const dColor = daysLeft < 0 ? 'var(--coral)' : daysLeft <= 3 ? 'var(--amber)' : 'var(--text3)';
-          return \`<div class="fin-entry-row">
+          return `<div class="fin-entry-row">
             <div class="fin-entry-left">
-              <div class="fin-entry-name">\${src?src.icon+' '+src.name:p.note||'Поступление'}</div>
-              <div class="fin-entry-meta" style="color:\${dColor}">\${p.date} · \${dLabel}</div>
+              <div class="fin-entry-name">${src?src.icon+' '+src.name:p.note||'Поступление'}</div>
+              <div class="fin-entry-meta" style="color:${dColor}">${p.date} · ${dLabel}</div>
             </div>
             <div style="display:flex;align-items:center;gap:8px">
-              <div class="fin-entry-amount" style="color:var(--amber)">+\${fmtMoney(p.amount)}</div>
-              <button onclick="receivePendingIncome(\${fin.pendingIncome.indexOf(p)})" style="background:var(--green);border:none;border-radius:6px;padding:4px 8px;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Получил</button>
+              <div class="fin-entry-amount" style="color:var(--amber)">+${fmtMoney(p.amount)}</div>
+              <button onclick="receivePendingIncome(${fin.pendingIncome.indexOf(p)})" style="background:var(--green);border:none;border-radius:6px;padding:4px 8px;color:#fff;font-size:11px;font-weight:600;cursor:pointer">Получил</button>
             </div>
-          </div>\`;
+          </div>`;
         }).join('');
   }
 
